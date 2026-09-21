@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { HeartIcon, MenuIcon, SearchIcon, XIcon } from 'lucide-react'
+import { HeartIcon, MenuIcon, SearchIcon, ShoppingBagIcon, XIcon } from 'lucide-react'
 import { site } from '@/lib/site'
 import { useWishlist } from '@/components/shop/wishlist-provider'
 import { Badge } from '@/components/ui/badge'
@@ -70,6 +70,9 @@ export function AppBar({
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4">
+        <Link href="/cart" aria-label="购物车" className={iconLinkClass}>
+          <ShoppingBagIcon className="size-5" />
+        </Link>
         {/* 左：移动菜单（md 隐藏）+ 品牌 */}
         <div className="flex flex-1 items-center gap-2">
           {/* 移动导航：原生 <details> 披露，不依赖任何 JS/组件库/门户/焦点陷阱。

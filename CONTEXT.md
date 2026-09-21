@@ -151,3 +151,15 @@ PDP 挂载时注册、卸载时（若仍指向自己）清空；FAB 据此在 `s
   故它住在 `domain` 而非 `server`。
 - `productCards` 的 items 要过 `isValidCard`：`parseEvent` 只验 `Array.isArray`，**深层形状是运行时的事**。
 - **产品卡一律不带价格**：AI 不传播 demo 价段（见 ADR 0004）。
+
+## Commerce MVP (2026-09-21)
+
+- Python `backend/` is authoritative for purchasable variants, Decimal prices, stock, carts and orders.
+- A stable persisted `variant_id` identifies one color + canonical EU size. Gallery indices are presentation only.
+- Money crosses HTTP as decimal strings. The browser submits variant IDs/quantities, never trusted prices.
+- `available` excludes `reserved`; creation atomically transfers units, cancellation reverses it.
+- Orders are only `pending_payment` or `cancelled`. Mock payment never charges or marks paid.
+- `(cart_id, idempotency_key)` identifies one durable order result; retry returns that order.
+- Anonymous session UUIDs are bearer credentials; Next stores them in an essential HttpOnly cookie.
+- Legacy TS catalog/search/AI remains; Python schema changes use Alembic only.
+- See `backend/README.md` and `docs/commerce-mvp-report.md` for current behavior.

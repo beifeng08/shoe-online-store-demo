@@ -1,70 +1,42 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ProductBuyBar } from './product-buy-bar'
 
-describe('ProductBuyBar demo checkout (2026-09: no store → Buy now → payment QR)', () => {
-  it('shows an enabled Buy now button and no Shopify small print', () => {
-    render(<ProductBuyBar buyUrl={null} availableSoon selectedLabel={null} />)
+const variant = {
+  id: 'variant-ivory-42',
+  color: 'Ivory',
+  size: 42,
+  price: '59.00',
+  currency: 'USD',
+  available: 10,
+}
+const props = { variant, selectedLabel: 'US 8.5', colorName: 'Ivory', loading: false, error: null }
+afterEach(() => vi.unstubAllGlobals())
 
-    const button = screen.getByRole('button', { name: 'Buy now' })
-    expect(button).toBeEnabled()
-    // Shopify 相关小字已删除（用户决策）
-    expect(screen.queryByText('Checkout lands on our Shopify store.')).not.toBeInTheDocument()
+describe('Python cart purchase entry', () => {
+  it('requires a real variant and disables unavailable stock', () => {
+    const { rerender } = render(<ProductBuyBar {...props} variant={null} />)
+    expect(screen.getByRole('button', { name: '加入购物车' })).toBeDisabled()
+    rerender(<ProductBuyBar {...props} variant={{ ...variant, available: 0 }} />)
+    expect(screen.getByRole('button', { name: '加入购物车' })).toBeDisabled()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
-
-  it('opens the demo checkout QR dialog on Buy now and closes it again', async () => {
-    const user = userEvent.setup()
-    render(
-      <ProductBuyBar
-        buyUrl={null}
-        availableSoon
-        selectedLabel={null}
-        productTitle="Urban Bloom"
-        priceLabel="$69.00"
-      />,
+  it('submits only variant identity and quantity and reports success', async () => {
+    const fetcher = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ items: [] }) })
+    vi.stubGlobal('fetch', fetcher)
+    render(<ProductBuyBar {...props} />)
+    fireEvent.click(screen.getByRole('button', { name: '加入购物车' }))
+    expect(await screen.findByText('已加入购物车')).toBeInTheDocument()
+    expect(fetcher).toHaveBeenCalledWith(
+      '/api/commerce/cart/items',
+      expect.objectContaining({ body: JSON.stringify({ variant_id: variant.id, quantity: 1 }) }),
     )
-
-    await user.click(screen.getByRole('button', { name: 'Buy now' }))
-    const dialog = screen.getByRole('dialog', { name: 'Demo checkout' })
-    expect(dialog).toBeInTheDocument()
-    expect(dialog).toHaveTextContent('Urban Bloom')
-    expect(dialog).toHaveTextContent('$69.00')
-    expect(screen.getByRole('img', { name: 'Payment QR code (demo)' })).toBeInTheDocument()
-    expect(dialog).toHaveTextContent(/scan to complete this demo order/i)
-
-    await user.click(screen.getByRole('button', { name: 'Close demo checkout' }))
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
-
-  it('links to the store when a buy URL is configured (dormant adapter path)', () => {
-    render(
-      <ProductBuyBar
-        buyUrl="https://example.shopify.com/products/daily-drift"
-        availableSoon={false}
-        selectedLabel={null}
-      />,
-    )
-
-    const link = screen.getByRole('link', { name: 'Add to bag' })
-    expect(link).toHaveAttribute('href', 'https://example.shopify.com/products/daily-drift')
-  })
-})
-
-describe('ProductBuyBar selection announcement', () => {
-  it('announces the picked size alone', () => {
-    render(<ProductBuyBar buyUrl={null} availableSoon selectedLabel="US 9" />)
-    expect(screen.getByRole('status')).toHaveTextContent('US 9 selected')
-  })
-
-  it('announces size and color together', () => {
-    render(<ProductBuyBar buyUrl={null} availableSoon selectedLabel="US 9" colorName="Ivory" />)
-    expect(screen.getByRole('status')).toHaveTextContent('US 9 · Ivory selected')
-  })
-
-  it('announces only the picked color when no size is picked', () => {
-    render(<ProductBuyBar buyUrl={null} availableSoon selectedLabel={null} colorName="Ivory" />)
-    expect(screen.getByRole('status')).toHaveTextContent('Ivory selected')
+  it('shows a backend error without claiming an item was added', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Service offline')))
+    render(<ProductBuyBar {...props} />)
+    fireEvent.click(screen.getByRole('button', { name: '加入购物车' }))
+    expect(await screen.findByText('Service offline')).toBeInTheDocument()
+    expect(screen.queryByText('已加入购物车')).not.toBeInTheDocument()
   })
 })

@@ -1,9 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { ProductActions } from './product-actions'
 import { ProductGallery } from './product-gallery'
 import { ProductColorSelectionProvider } from './product-color-selection'
 import type { ProductView } from '@/domain/product'
+
+beforeEach(() =>
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue({ ok: true, json: async () => ({ variants: [] }) }),
+  ),
+)
+afterEach(() => vi.unstubAllGlobals())
 
 const p: ProductView = {
   id: 'p01',
@@ -40,7 +48,7 @@ describe('ProductActions layout order', () => {
     const sizeLegend = screen.getByText('Select size')
     const findSize = screen.getByRole('button', { name: 'Find my size' })
     const slot = screen.getByTestId('accordion-slot')
-    const cta = screen.getByRole('button', { name: 'Buy now' })
+    const cta = screen.getByRole('button', { name: '加入购物车' })
 
     const before = (a: Element, b: Element) =>
       (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
@@ -70,6 +78,42 @@ const multiColor = {
 }
 
 describe('PDP colorway picker (decision #16: color selectable pre-order)', () => {
+  it('resolves color and size to the backend variant ID, regardless of array ordering', async () => {
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        variants: [
+          {
+            id: 'peach-43',
+            color: 'Peach',
+            size: 43,
+            price: '59.00',
+            currency: 'USD',
+            available: 4,
+          },
+          {
+            id: 'ivory-42',
+            color: 'Ivory',
+            size: 42,
+            price: '63.00',
+            currency: 'USD',
+            available: 2,
+          },
+        ],
+      }),
+    })
+    vi.stubGlobal('fetch', fetcher)
+    render(<ProductActions product={multiColor} buyUrl={null} />)
+    fireEvent.click(screen.getByRole('radio', { name: 'Ivory' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'US 8.5' }))
+    await screen.findByText(/63.00/)
+    fireEvent.click(screen.getByRole('button', { name: '加入购物车' }))
+    await screen.findByText('已加入购物车')
+    expect(fetcher).toHaveBeenLastCalledWith(
+      '/api/commerce/cart/items',
+      expect.objectContaining({ body: JSON.stringify({ variant_id: 'ivory-42', quantity: 1 }) }),
+    )
+  })
   it('hides the color picker for single-color or color-less products', () => {
     const { rerender } = render(<ProductActions product={p} buyUrl={null} />)
     expect(screen.queryByText('Color')).not.toBeInTheDocument()
@@ -152,7 +196,7 @@ describe('ProductActions store-live takeover (Shopify Buy Button)', () => {
     // demo 购买条（ProductBuyBar）未渲染：其特征 role=status 不存在；同名 "Buy now"
     // 只能是休眠 ShopifyBuyButton 的 SDK 未加载兜底按钮（禁用态），故所有 Buy now 均禁用。
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
-    for (const b of screen.queryAllByRole('button', { name: 'Buy now' })) {
+    for (const b of screen.queryAllByRole('button', { name: '加入购物车' })) {
       expect(b).toBeDisabled()
     }
     expect(screen.queryByText(/selected/)).not.toBeInTheDocument()
@@ -166,6 +210,6 @@ describe('ProductActions store-live takeover (Shopify Buy Button)', () => {
   it('keeps demo UI when buyConfig is null', () => {
     render(<ProductActions product={multiColor} buyUrl={null} buyConfig={null} />)
     expect(screen.getByText('Select size')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Buy now' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '加入购物车' })).toBeInTheDocument()
   })
 })

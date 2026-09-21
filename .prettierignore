@@ -20,3 +20,10 @@ next-env.d.ts
 
 # import.py 生成的真实供应商目录数据文件（数组展开属噪音，不参与格式化）
 src/server/catalog/data/
+backend/.venv/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/data/
+.uv-cache/
+*.log

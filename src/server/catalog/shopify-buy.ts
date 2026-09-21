@@ -71,6 +71,7 @@ const envMoney = () => envStr('SHOPIFY_BUY_MONEY_FORMAT', '¥{{amount}}')
  * env 在调用时读取（不在模块顶层），便于测试与运行时热配。
  */
 export function shopifyBuyConfigFor(handle: string): ShopifyBuyConfig | null {
+  if (envStr('SHOPIFY_ENABLED') !== 'true') return null
   const productId = shopifyProductIdFor(handle)
   const domain = envDomain()
   const token = envToken()

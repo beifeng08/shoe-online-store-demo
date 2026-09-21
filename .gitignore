@@ -46,3 +46,21 @@ yarn-error.log*
 # local sqlite runtime
 /data/
 /.vitest/
+
+# Python commerce runtime and local verification logs
+backend/.venv/
+.uv-cache/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+*.db-shm
+*.db-wal
+*-test.log
+*-lint.log
+*-build.log
+*-format.log
+compileall.log
+postgres-migration.sql
+backend/pytest-cache-files-*/

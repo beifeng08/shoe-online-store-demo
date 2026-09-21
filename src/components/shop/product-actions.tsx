@@ -1,12 +1,13 @@
 'use client'
 
-import { useSyncExternalStore, useState, type ReactNode } from 'react'
+import { useSyncExternalStore, useEffect, useState, type ReactNode } from 'react'
+import type { CommerceProduct } from '@/domain/commerce'
+import { commerceRequest } from '@/lib/commerce-client'
 import type { CanonicalSize } from '@/domain/product'
 import type { ProductView } from '@/domain/product'
 import type { ShopifyBuyConfig } from '@/server/catalog/shopify-buy'
 import { footMmToEU } from '@/domain/size'
 import { mySize } from '@/lib/my-size'
-import { formatPrice } from '@/lib/format'
 import { useAssistant } from '@/components/assistant/assistant-provider'
 import { SizeSelector } from './size-selector'
 import { ProductBuyBar } from './product-buy-bar'
@@ -34,13 +35,24 @@ interface ProductActionsProps {
 // PDP 购买群集（顺序）：颜色选择（多色款，受控）→ 尺码选择 → "Find my size" → 手风琴（children 插槽）→ 购买条。
 // children 插槽让本集群保持单一 'use client' 边界共享 selected 状态，同时允许页面以 RSC 注入中间内容；
 // 持有所选尺码/颜色状态，供购买条在无 store 阶段做 aria-live 说明。
-export function ProductActions({
-  product,
-  buyUrl,
-  buyConfig = null,
-  children,
-}: ProductActionsProps) {
+export function ProductActions({ product, buyConfig = null, children }: ProductActionsProps) {
   const storeLive = buyConfig != null
+  const [commerce, setCommerce] = useState<CommerceProduct | null>(null)
+  const [commerceError, setCommerceError] = useState<string | null>(null)
+  useEffect(() => {
+    if (storeLive) return
+    let active = true
+    commerceRequest<CommerceProduct>(`catalog/products/${product.handle}`)
+      .then((data) => {
+        if (active) setCommerce(data)
+      })
+      .catch((e: Error) => {
+        if (active) setCommerceError(e.message)
+      })
+    return () => {
+      active = false
+    }
+  }, [product.handle, storeLive])
   const colors = product.colors ?? []
   // 「我的尺码」快照：demo 分支 Select-size 命中高亮（产品在库才显形，天然自然）。
   const myMm = useSyncExternalStore(mySize.subscribe, mySize.getSnapshot, mySize.getServerSnapshot)
@@ -131,12 +143,15 @@ export function ProductActions({
       {findMySize}
       {children}
       <ProductBuyBar
-        buyUrl={buyUrl}
-        availableSoon={buyUrl == null}
+        variant={
+          commerce?.variants.find(
+            (v) => v.color === (colorName ?? 'Standard') && v.size === selected,
+          ) ?? null
+        }
+        loading={!commerce && !commerceError}
+        error={commerceError}
         selectedLabel={selectedLabel}
         colorName={colorName}
-        productTitle={product.title}
-        priceLabel={formatPrice(product.price.amount)}
       />
     </div>
   )

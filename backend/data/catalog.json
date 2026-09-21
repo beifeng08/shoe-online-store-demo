@@ -1,0 +1,2147 @@
+[
+  {
+    "id": "evo-01",
+    "handle": "dc-1001",
+    "title": "Urban Bloom",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ink Black, Ivory, Peach, Blue, Green. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 59,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#3f9d4a"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1001/1.webp",
+      "/products/dc-1001/2.webp",
+      "/products/dc-1001/3.webp",
+      "/products/dc-1001/4.webp",
+      "/products/dc-1001/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Peach",
+        "hex": "#f5c8bd"
+      },
+      {
+        "name": "Blue",
+        "hex": "#3f7fd6"
+      },
+      {
+        "name": "Green",
+        "hex": "#3f9d4a"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-02",
+    "handle": "dc-1002",
+    "title": "Fresh Field",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ivory, Lake Blue, Grass, Duckling Yellow, Vivid Orange. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 63,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f3ede2",
+        "#ff6a00"
+      ],
+      "accent": "#f3ede2",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1002/1.webp",
+      "/products/dc-1002/2.webp",
+      "/products/dc-1002/3.webp",
+      "/products/dc-1002/4.webp",
+      "/products/dc-1002/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Lake Blue",
+        "hex": "#6cc3d5"
+      },
+      {
+        "name": "Grass",
+        "hex": "#8fbf6a"
+      },
+      {
+        "name": "Duckling Yellow",
+        "hex": "#f6c445"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-03",
+    "handle": "dc-1003",
+    "title": "Mint Canvas",
+    "subtitle": "Unisex · 4 colorways",
+    "description": "A unisex everyday sneaker offered in 4 colorways: Mint, Ivory, Neon Orange, Rose. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 65,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#bfe3cd",
+        "#e84a5f"
+      ],
+      "accent": "#bfe3cd",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1003/1.webp",
+      "/products/dc-1003/2.webp",
+      "/products/dc-1003/3.webp",
+      "/products/dc-1003/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Mint",
+        "hex": "#bfe3cd"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Neon Orange",
+        "hex": "#ff8c1a"
+      },
+      {
+        "name": "Rose",
+        "hex": "#e84a5f"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-04",
+    "handle": "dc-1009",
+    "title": "Neon Pulse",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ink Black, Rose, Mint, Snow White, Purple. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 67,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#8a63b8"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1009/1.webp",
+      "/products/dc-1009/2.webp",
+      "/products/dc-1009/3.webp",
+      "/products/dc-1009/4.webp",
+      "/products/dc-1009/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Rose",
+        "hex": "#e84a5f"
+      },
+      {
+        "name": "Mint",
+        "hex": "#bfe3cd"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Purple",
+        "hex": "#8a63b8"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-05",
+    "handle": "dc-1007",
+    "title": "Blush Slip",
+    "subtitle": "5 colorways",
+    "description": "A everyday sneaker offered in 5 colorways: Snow White, Vivid Orange, Ink Black, Rose, Blush. Size range to be confirmed by the studio.",
+    "price": {
+      "amount": 69,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [],
+    "features": [
+      "Size range to be confirmed",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f4f4f0",
+        "#f6d7d2"
+      ],
+      "accent": "#f4f4f0",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1007/1.webp",
+      "/products/dc-1007/2.webp",
+      "/products/dc-1007/3.webp",
+      "/products/dc-1007/4.webp",
+      "/products/dc-1007/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Rose",
+        "hex": "#e84a5f"
+      },
+      {
+        "name": "Blush",
+        "hex": "#f6d7d2"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-06",
+    "handle": "dc-1010",
+    "title": "Blush Low",
+    "subtitle": "Unisex · 4 colorways",
+    "description": "A unisex everyday sneaker offered in 4 colorways: Ivory, Ink Black, Silver, Blush. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 71,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f3ede2",
+        "#f6d7d2"
+      ],
+      "accent": "#f3ede2",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1010/1.webp",
+      "/products/dc-1010/2.webp",
+      "/products/dc-1010/3.webp",
+      "/products/dc-1010/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Silver",
+        "hex": "#c8c9cd"
+      },
+      {
+        "name": "Blush",
+        "hex": "#f6d7d2"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-07",
+    "handle": "dc-1008",
+    "title": "Court Glow",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Ink Black, Neon Green, Snow White, Blush. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 73,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#f6d7d2"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1008/1.webp",
+      "/products/dc-1008/2.webp",
+      "/products/dc-1008/3.webp",
+      "/products/dc-1008/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Blush",
+        "hex": "#f6d7d2"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-08",
+    "handle": "26006-f",
+    "title": "Citrus Step",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Cheese Yellow, Ink Black, Mint, Snow White. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 75,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f0d06a",
+        "#f4f4f0"
+      ],
+      "accent": "#f0d06a",
+      "views": 3
+    },
+    "images": [
+      "/products/26006-f/1.webp",
+      "/products/26006-f/2.webp",
+      "/products/26006-f/3.webp",
+      "/products/26006-f/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Cheese Yellow",
+        "hex": "#f0d06a"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Mint",
+        "hex": "#bfe3cd"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-09",
+    "handle": "26015-m",
+    "title": "Monochrome Ace",
+    "subtitle": "Unisex · 4 colorways",
+    "description": "A unisex everyday sneaker offered in 4 colorways: Ink Black, Midnight Silver, Ivory, Snow White. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 79,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#f4f4f0"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/26015-m/1.webp",
+      "/products/26015-m/2.webp",
+      "/products/26015-m/3.webp",
+      "/products/26015-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Midnight Silver",
+        "hex": "#9aa1ab"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-10",
+    "handle": "dc-26075",
+    "title": "Triple Tone",
+    "subtitle": "Men's · 3 colorways",
+    "description": "A men's everyday sneaker offered in 3 colorways: Ivory, Ink Black, Silver. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 59,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "3 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f3ede2",
+        "#c8c9cd"
+      ],
+      "accent": "#f3ede2",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-26075/1.webp",
+      "/products/dc-26075/2.webp",
+      "/products/dc-26075/3.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Silver",
+        "hex": "#c8c9cd"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-11",
+    "handle": "jx119-x",
+    "title": "Noir Stealth",
+    "subtitle": "Unisex · 2 colorways",
+    "description": "A unisex everyday sneaker offered in 2 colorways: Midnight Silver, Ink Black. Available in Women's US 4.5–7, Men's US 6.5–10.5.",
+    "price": {
+      "amount": 63,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    "features": [
+      "2 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–10.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#9aa1ab",
+        "#1a1a1a"
+      ],
+      "accent": "#9aa1ab",
+      "views": 3
+    },
+    "images": [
+      "/products/jx119-x/1.webp",
+      "/products/jx119-x/2.webp"
+    ],
+    "colors": [
+      {
+        "name": "Midnight Silver",
+        "hex": "#9aa1ab"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-12",
+    "handle": "jx119",
+    "title": "Silver Swoop",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ink Black, Midnight Silver, Silver, Beige-Orange, Beige-Green. Available in Women's US 4.5–7, Men's US 6.5–10.5.",
+    "price": {
+      "amount": 65,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–10.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#d9d5b0"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/jx119/1.webp",
+      "/products/jx119/2.webp",
+      "/products/jx119/3.webp",
+      "/products/jx119/4.webp",
+      "/products/jx119/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Midnight Silver",
+        "hex": "#9aa1ab"
+      },
+      {
+        "name": "Silver",
+        "hex": "#c8c9cd"
+      },
+      {
+        "name": "Beige-Orange",
+        "hex": "#e0b398"
+      },
+      {
+        "name": "Beige-Green",
+        "hex": "#d9d5b0"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-13",
+    "handle": "dc-1004",
+    "title": "Flash Green",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Neon Green, Midnight Silver, Taro, Ink Black. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 67,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#d6f542",
+        "#1a1a1a"
+      ],
+      "accent": "#d6f542",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1004/1.webp",
+      "/products/dc-1004/2.webp",
+      "/products/dc-1004/3.webp",
+      "/products/dc-1004/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Midnight Silver",
+        "hex": "#9aa1ab"
+      },
+      {
+        "name": "Taro",
+        "hex": "#b7a5d8"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-14",
+    "handle": "dc-1005",
+    "title": "Midnight Walk",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ink Black, Vivid Orange, Chocolate, Snow White, Ivory. Available in Women's US 4.5–7, Men's US 6.5–10.5.",
+    "price": {
+      "amount": 69,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–10.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#f3ede2"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1005/1.webp",
+      "/products/dc-1005/2.webp",
+      "/products/dc-1005/3.webp",
+      "/products/dc-1005/4.webp",
+      "/products/dc-1005/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Chocolate",
+        "hex": "#5f3f2c"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-15",
+    "handle": "dc-1006",
+    "title": "Cocoa Low",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ink Black, Chocolate, Ivory, Vivid Orange, Chinese Red. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 71,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#c8102e"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1006/1.webp",
+      "/products/dc-1006/2.webp",
+      "/products/dc-1006/3.webp",
+      "/products/dc-1006/4.webp",
+      "/products/dc-1006/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Chocolate",
+        "hex": "#5f3f2c"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Chinese Red",
+        "hex": "#c8102e"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-16",
+    "handle": "26012-m",
+    "title": "Ivory Court",
+    "subtitle": "Men's · 3 colorways",
+    "description": "A men's everyday sneaker offered in 3 colorways: Neon Green, Ink Black, Vivid Orange. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 73,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "3 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#d6f542",
+        "#ff6a00"
+      ],
+      "accent": "#d6f542",
+      "views": 3
+    },
+    "images": [
+      "/products/26012-m/1.webp",
+      "/products/26012-m/2.webp",
+      "/products/26012-m/3.webp"
+    ],
+    "colors": [
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-17",
+    "handle": "26027-m",
+    "title": "Lime Sprint",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Neon Green, Neon Orange, Ink Black, Snow White. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 75,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#d6f542",
+        "#f4f4f0"
+      ],
+      "accent": "#d6f542",
+      "views": 3
+    },
+    "images": [
+      "/products/26027-m/1.webp",
+      "/products/26027-m/2.webp",
+      "/products/26027-m/3.webp",
+      "/products/26027-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Neon Orange",
+        "hex": "#ff8c1a"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-18",
+    "handle": "26011-m",
+    "title": "Orange Blaze",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Ink Black, Vivid Orange, Silver, Midnight Purple. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 79,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#5a4a7a"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/26011-m/1.webp",
+      "/products/26011-m/2.webp",
+      "/products/26011-m/3.webp",
+      "/products/26011-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Silver",
+        "hex": "#c8c9cd"
+      },
+      {
+        "name": "Midnight Purple",
+        "hex": "#5a4a7a"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-19",
+    "handle": "26014-m",
+    "title": "Moss Runner",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Snow White, Neon Green, Ink Black, Earth. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 59,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f4f4f0",
+        "#9a7b4f"
+      ],
+      "accent": "#f4f4f0",
+      "views": 3
+    },
+    "images": [
+      "/products/26014-m/1.webp",
+      "/products/26014-m/2.webp",
+      "/products/26014-m/3.webp",
+      "/products/26014-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Earth",
+        "hex": "#9a7b4f"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-20",
+    "handle": "26013-m",
+    "title": "Silver Haze",
+    "subtitle": "Men's · 3 colorways",
+    "description": "A men's everyday sneaker offered in 3 colorways: Ink Black, Snow White, Silver. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 63,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "3 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#c8c9cd"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/26013-m/1.webp",
+      "/products/26013-m/2.webp",
+      "/products/26013-m/3.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Silver",
+        "hex": "#c8c9cd"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-21",
+    "handle": "26018-m",
+    "title": "Yolk Runner",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Ink Black, Field Green, Snow White, Duckling Yellow. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 65,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#f6c445"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/26018-m/1.webp",
+      "/products/26018-m/2.webp",
+      "/products/26018-m/3.webp",
+      "/products/26018-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Field Green",
+        "hex": "#66a83f"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Duckling Yellow",
+        "hex": "#f6c445"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-22",
+    "handle": "26019-m",
+    "title": "Blush Day",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Soft Pink, Vivid Orange, Ink Black, Grass Green, Duckling Yellow. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 67,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f2c6cf",
+        "#f6c445"
+      ],
+      "accent": "#f2c6cf",
+      "views": 3
+    },
+    "images": [
+      "/products/26019-m/1.webp",
+      "/products/26019-m/2.webp",
+      "/products/26019-m/3.webp",
+      "/products/26019-m/4.webp",
+      "/products/26019-m/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Soft Pink",
+        "hex": "#f2c6cf"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Grass Green",
+        "hex": "#7cb342"
+      },
+      {
+        "name": "Duckling Yellow",
+        "hex": "#f6c445"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-23",
+    "handle": "26010-m",
+    "title": "Alpine Split",
+    "subtitle": "Unisex · 4 colorways",
+    "description": "A unisex everyday sneaker offered in 4 colorways: White-Green, Ink Black, Midnight Silver, White-Blue. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 69,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#eef2e4",
+        "#e6eef4"
+      ],
+      "accent": "#eef2e4",
+      "views": 3
+    },
+    "images": [
+      "/products/26010-m/1.webp",
+      "/products/26010-m/2.webp",
+      "/products/26010-m/3.webp",
+      "/products/26010-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "White-Green",
+        "hex": "#eef2e4"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Midnight Silver",
+        "hex": "#9aa1ab"
+      },
+      {
+        "name": "White-Blue",
+        "hex": "#e6eef4"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-24",
+    "handle": "26017-m",
+    "title": "Cocoa Glide",
+    "subtitle": "Unisex · 4 colorways",
+    "description": "A unisex everyday sneaker offered in 4 colorways: Ink Black, Vivid Orange, Snow White, Chocolate. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 71,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "comfort"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#5f3f2c"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/26017-m/1.webp",
+      "/products/26017-m/2.webp",
+      "/products/26017-m/3.webp",
+      "/products/26017-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Chocolate",
+        "hex": "#5f3f2c"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-25",
+    "handle": "26016-m",
+    "title": "Avocado Kick",
+    "subtitle": "Men's · 4 colorways",
+    "description": "A men's everyday sneaker offered in 4 colorways: Avocado, Vivid Orange, Ink Black, Ivory. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 73,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "4 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#9cb356",
+        "#f3ede2"
+      ],
+      "accent": "#9cb356",
+      "views": 3
+    },
+    "images": [
+      "/products/26016-m/1.webp",
+      "/products/26016-m/2.webp",
+      "/products/26016-m/3.webp",
+      "/products/26016-m/4.webp"
+    ],
+    "colors": [
+      {
+        "name": "Avocado",
+        "hex": "#9cb356"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-26",
+    "handle": "26037-m",
+    "title": "Party Bright",
+    "subtitle": "Men's · 5 colorways",
+    "description": "A men's everyday sneaker offered in 5 colorways: Snow White, Neon Green, Ink Black, Pale Yellow, Vivid Orange. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 75,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "everyday"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f4f4f0",
+        "#ff6a00"
+      ],
+      "accent": "#f4f4f0",
+      "views": 3
+    },
+    "images": [
+      "/products/26037-m/1.webp",
+      "/products/26037-m/2.webp",
+      "/products/26037-m/3.webp",
+      "/products/26037-m/4.webp",
+      "/products/26037-m/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Snow White",
+        "hex": "#f4f4f0"
+      },
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Pale Yellow",
+        "hex": "#f5e6a3"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-27",
+    "handle": "dc-1011",
+    "title": "Night Flight",
+    "subtitle": "Men's · 5 colorways",
+    "description": "A men's everyday sneaker offered in 5 colorways: Midnight Purple, Ink Black, Vivid Orange, Wine, Olive. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 79,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "minimal"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#5a4a7a",
+        "#6b6b3f"
+      ],
+      "accent": "#5a4a7a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1011/1.webp",
+      "/products/dc-1011/2.webp",
+      "/products/dc-1011/3.webp",
+      "/products/dc-1011/4.webp",
+      "/products/dc-1011/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Midnight Purple",
+        "hex": "#5a4a7a"
+      },
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      },
+      {
+        "name": "Wine",
+        "hex": "#722f37"
+      },
+      {
+        "name": "Olive",
+        "hex": "#6b6b3f"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-28",
+    "handle": "dc-1012",
+    "title": "Parade Pop",
+    "subtitle": "Unisex · 5 colorways",
+    "description": "A unisex everyday sneaker offered in 5 colorways: Ivory, Neon Green, Yellow, Royal Blue, Vivid Orange. Available in Women's US 4.5–7, Men's US 6.5–9.5.",
+    "price": {
+      "amount": 59,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Women's US 4.5–7, Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#f3ede2",
+        "#ff6a00"
+      ],
+      "accent": "#f3ede2",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1012/1.webp",
+      "/products/dc-1012/2.webp",
+      "/products/dc-1012/3.webp",
+      "/products/dc-1012/4.webp",
+      "/products/dc-1012/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Neon Green",
+        "hex": "#d6f542"
+      },
+      {
+        "name": "Yellow",
+        "hex": "#ffd400"
+      },
+      {
+        "name": "Royal Blue",
+        "hex": "#2a52be"
+      },
+      {
+        "name": "Vivid Orange",
+        "hex": "#ff6a00"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  },
+  {
+    "id": "evo-29",
+    "handle": "dc-1013",
+    "title": "Cloud Mint",
+    "subtitle": "Men's · 5 colorways",
+    "description": "A men's everyday sneaker offered in 5 colorways: Ink Black, Mint, Light Blue, Ivory, Bright Yellow. Available in Men's US 6.5–9.5.",
+    "price": {
+      "amount": 63,
+      "currencyCode": "USD"
+    },
+    "productType": "Sneaker",
+    "tags": [
+      "casual",
+      "real-catalog"
+    ],
+    "collections": [
+      "travel"
+    ],
+    "sizes": [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "features": [
+      "5 colorways",
+      "Size run Men's US 6.5–9.5",
+      "Fits true to size"
+    ],
+    "fitNotes": "Fits true to size with a medium width; if between sizes, size up.",
+    "construction": {
+      "pattern": "lattice",
+      "density": 0.75,
+      "printedUpper": false
+    },
+    "visual": {
+      "palette": [
+        "#1a1a1a",
+        "#ffe01a"
+      ],
+      "accent": "#1a1a1a",
+      "views": 3
+    },
+    "images": [
+      "/products/dc-1013/1.webp",
+      "/products/dc-1013/2.webp",
+      "/products/dc-1013/3.webp",
+      "/products/dc-1013/4.webp",
+      "/products/dc-1013/5.webp"
+    ],
+    "colors": [
+      {
+        "name": "Ink Black",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Mint",
+        "hex": "#bfe3cd"
+      },
+      {
+        "name": "Light Blue",
+        "hex": "#a8d3e8"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#f3ede2"
+      },
+      {
+        "name": "Bright Yellow",
+        "hex": "#ffe01a"
+      }
+    ],
+    "createdAt": "2026-09-06T00:00:00Z"
+  }
+]

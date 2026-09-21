@@ -13,15 +13,16 @@ Built with **Next.js (App Router), Tailwind and shadcn/ui on the Node runtime (n
 manager)** — with a server-side shopping assistant that stays understated: consumer wording
 only, never "AI"-branded.
 
-The storefront has **no real checkout**: PDPs run a **custom demo flow** — demo price (placeholder
-**$59–79** band), size/color pickers and a **Buy now** CTA that opens a **payment-QR checkout
-dialog** (a placeholder demo QR; no real payment is initiated). A **Shopify Buy Button** channel
-(`SHOPIFY_BUY_*` env + handle map) is retained in the codebase but deliberately **dormant** — the
-demo never configures it (a switchable catalog adapter also remains for a future direct Storefront
-read). The catalog is a local seed of **29 real supplier styles** (imported from the supplier's
-workbook) with **real product photos** (WebP in `public/products/`); image-less entries fall back
-to programmatic SVG visuals. `/shop` also carries the "spend $50, get a free gift" offer with a
-gallery of leftover-offcut trinkets.
+The storefront now includes a **local commerce MVP**: select a backend variant → cart →
+server-recomputed checkout → inventory reservation → `pending_payment` order. The UI clearly
+shows **“支付暂未开放”**. No real payment or paid state exists. Shopify compatibility is
+retained but **off by default** (`SHOPIFY_ENABLED=false`). The original TypeScript display,
+search and AI services remain during the gradual migration.
+
+The independent Python 3.12+ backend owns variants, prices, inventory, carts and orders.
+See [backend setup and API documentation](backend/README.md) and the
+[verified MVP report](docs/commerce-mvp-report.md). Existing supplier assets remain restricted
+by LICENSE-ASSETS.
 
 ## Tech stack
 
@@ -42,6 +43,9 @@ gallery of leftover-offcut trinkets.
 
 ## Quick start
 
+This starts the retained browsing/AI frontend. For the complete commerce flow, start
+both services using the commands below.
+
 ```bash
 npm ci
 cp .env.example .env.local      # defaults are fine — empty AI_API_KEY = Mock mode
@@ -53,14 +57,38 @@ npm run dev               # http://localhost:3000
 > `DB_DRIVER=postgres` (with a `DATABASE_URL=postgres://…`) switches to `postgres.js` —
 > both drivers run on Node, Vercel-ready.
 
-First run auto-creates the schema (**three** tables: `products` + `product_embeddings`,
+The **legacy TypeScript display/AI database** auto-creates its schema (**three** tables: `products` + `product_embeddings`,
 `ai_usage`) via idempotent `CREATE TABLE IF NOT EXISTS` on **either** driver — SQLite file at
-`./data/local.db`, or the Postgres database behind `DATABASE_URL`. No migration step.
+`./data/local.db`, or the Postgres database behind `DATABASE_URL`. This legacy behavior is retained. The new Python commerce database is separate and requires **Alembic migrations**; it never auto-creates tables at runtime.
 
 **Catalog lives in the `products` table.** The catalog adapter defaults to reading the table;
 when it is empty the first request auto-seeds it from the import layer (supplier JSON +
 curation). `CATALOG_SOURCE=seed` switches back to the pure in-memory import layer (used by unit
-tests); `SHOPIFY_*` still takes priority over both.
+tests); `SHOPIFY_ENABLED=true` plus credentials is required for the dormant Shopify adapter.
+
+### Start both services (PowerShell)
+
+```powershell
+# Terminal 1: first setup + backend
+python3.12 -m venv backend/.venv
+backend/.venv/Scripts/python.exe -m pip install -r backend/requirements-dev.lock
+Copy-Item backend/.env.example backend/.env
+cd backend
+.venv/Scripts/python.exe -m alembic upgrade head
+.venv/Scripts/python.exe -m app.seed
+.venv/Scripts/python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+# Terminal 2: repository root
+npm ci
+# Add to .env.local (preserve any existing configuration):
+# PYTHON_API_URL=http://127.0.0.1:8000
+# SHOPIFY_ENABLED=false
+npm run dev
+```
+
+Open `/shop`, choose a color and size on a product, use **加入购物车**, then `/cart`
+and `/checkout`. Order creation reserves inventory and shows its ID plus **支付暂未开放**.
+The order link supports reload and cancellation (releases stock). Local use needs no API keys.
 
 ### What you can do without any setup
 
@@ -107,10 +135,10 @@ See [`.env.example`](.env.example) for the annotated template. Summary:
 | `AI_DAILY_TOKEN_CAP` | `1000000` | Daily token budget (SUM over `ai_usage` per UTC day) |
 | `AI_DISABLE_REAL` | `0` | `1` forces Mock mode even with a key (abuse kill switch) |
 | `DB_DRIVER` | `sqlite` | `sqlite` (default) or `postgres` — selects the app DB driver |
-| `CATALOG_SOURCE` | `db` | Runtime catalog source: `db` = `products` table (default, auto-seeded when empty); `seed` = in-memory import layer (tests); `SHOPIFY_*` still wins |
+| `CATALOG_SOURCE` | `db` | Runtime catalog source: `db` = `products` table (default, auto-seeded when empty); `seed` = in-memory import layer (tests); Shopify requires explicit `SHOPIFY_ENABLED=true` |
 | `DATABASE_URL` | `./data/local.db` | sqlite: local file; postgres: `postgres://…` connection string |
-| `SHOPIFY_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN` | *(empty)* | Reserved. Catalog adapter switches seed → Shopify only when **both** are set (not yet active). |
-| `SHOPIFY_BUY_DOMAIN`, `SHOPIFY_BUY_TOKEN` | *(empty)* | **PDP Shopify Buy Button channel** (2026-09): when **both** are set, every PDP mapped in `src/server/catalog/shopify-buy.ts` (29/29 store products, handle-keyed) renders a real Buy Button that takes over variant selection + checkout; unset keeps the demo pickers/price. Independent of the two vars above on purpose (setting those would trip the catalog stub). |
+| `SHOPIFY_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN` | *(empty)* | Reserved. Catalog adapter switches to Shopify only when `SHOPIFY_ENABLED=true` and **both** are set (not yet active). |
+| `SHOPIFY_BUY_DOMAIN`, `SHOPIFY_BUY_TOKEN` | *(empty)* | **PDP Shopify Buy Button channel** (2026-09): only with `SHOPIFY_ENABLED=true` and **both** credentials set, every PDP mapped in `src/server/catalog/shopify-buy.ts` (29/29 store products, handle-keyed) renders a real Buy Button that takes over variant selection + checkout; unset keeps the local commerce flow. Independent of the two vars above on purpose (setting those would trip the catalog stub). |
 
 ### Enabling real AI
 
@@ -134,7 +162,7 @@ src/
   app/                     # App Router pages & routes
     page.tsx               # Landing (zero AI presence by design)
     shop/page.tsx          # /shop — SSR list, URL-state filters (collection/size/price/sort/q)
-    product/[handle]/page.tsx  # PDP — SSG (generateStaticParams), buy CTA placeholder
+    product/[handle]/page.tsx  # PDP — SSG (generateStaticParams), variant/cart flow
     api/ai/chat/route.ts   # POST SSE endpoint (delta|productCards|sizeFit|done|error frames)
     og/route.tsx           # Local OpenGraph image (ImageResponse, no network)
   components/
@@ -157,7 +185,7 @@ src/
 - **Catalog**: runtime source is the `products` DB table — auto-seeded from the import layer
   (29 supplier styles across 4 collections, curation in `seed.ts` over `data/supplier.json`)
   when empty; `/shop`, PDP and search all read the table, so edits (title, price, collection…)
-  apply on the next dynamic request. `CATALOG_SOURCE=seed` keeps the pure in-memory layer for
+  apply on the next dynamic request for the retained display/search layer. `CATALOG_SOURCE=seed` keeps the pure in-memory layer for
   tests. Product cards and PDP galleries use real photos (`Product.images`, WebP under
   `public/products/<handle>/`) and fall back to SVG visuals only when image-less. A separate
   `gifts.ts` module feeds the `/shop` free-gift gallery (gifts are display-only, never in the
@@ -168,8 +196,8 @@ src/
   `SHOPIFY_BUY_DOMAIN` + `SHOPIFY_BUY_TOKEN` are set, the store-mapped PDP hides the demo
   price/pickers and mounts one parameterized `ShopifyBuyButton` (SDK `createComponent` loading
   the admin-generated options verbatim), letting the store own variants, price and checkout.
-  Unset → all PDPs run the custom demo flow (**Buy now** → demo payment-QR dialog, placeholder
-  `public/payments/checkout-demo-qr.png`; swap in a live QR image for a real payment demo).
+  Disabled by default → PDP variant selection and cart use the Python commerce proxy; no QR
+  payment dialog or real payment is available. Both Shopify paths require `SHOPIFY_ENABLED=true`.
 - **AI**: RAG-lite, zero tool-calling — every real/gateway model only needs chat completions.
   Retrieved product cards are injected into the system prompt; the model must answer from that
   injected content only. Modes: `shopping`, `size-fit` (deterministic), `outfit`, `find-shoes`,
@@ -185,13 +213,14 @@ src/
 
 ## Known limitations
 
-- **This site has no cart or checkout.** The detail CTA is a demo **Buy now** that opens a
-  payment-QR dialog (`public/payments/checkout-demo-qr.png`, a placeholder that never charges) to
-  demonstrate the order flow; a dormant `getBuyUrl` adapter contract returns `null` and the
-  dormant Shopify Buy Button only activates if `SHOPIFY_BUY_*` env is ever configured.
+- Payment is disabled. Pending orders reserve inventory until explicitly cancelled; no automatic
+  expiration job exists. Losing the anonymous session cookie loses access to its orders.
+- The TypeScript display/search catalog and Python commerce catalog start from the same snapshot;
+  future edits need a deliberate migration/sync step. Python always re-reads prices at checkout.
+- PostgreSQL-compatible schema and SQL are provided; local runtime tests use SQLite.
 - Unknown product handles return the not-found UI with **HTTP 200 + `noindex`** under the current
   `dynamicParams` SSG setting (a deliberate, documented tradeoff; revisit if SEO on 404s matters).
-- Compliance: no cookies, no tracking, no personal data sent to AI providers. Anonymous `ai_usage`
+- Privacy: an essential HttpOnly anonymous cart cookie is used; no tracking. Anonymous `ai_usage`
   token counts are stored locally for budget enforcement only.
 
 ## Disclaimer

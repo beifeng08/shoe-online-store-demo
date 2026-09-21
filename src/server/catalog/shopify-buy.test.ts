@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { shopifyEnabled } from './shopify-stub'
 import {
   SHOPIFY_PRODUCT_IDS,
   shopifyBuyConfigFor,
@@ -8,6 +9,16 @@ import { seedProducts } from '@/server/catalog/seed'
 
 // 商店直购映射（2026-09-06 全目录）：本地 seed handle ↔ Shopify 商店同 handle 商品。
 describe('shopify-buy catalog map', () => {
+  afterEach(() => vi.unstubAllEnvs())
+  it('defaults both Shopify entry points off even with legacy credentials', () => {
+    vi.stubEnv('SHOPIFY_ENABLED', '')
+    vi.stubEnv('SHOPIFY_BUY_DOMAIN', 'demo.myshopify.com')
+    vi.stubEnv('SHOPIFY_BUY_TOKEN', 'legacy')
+    vi.stubEnv('SHOPIFY_DOMAIN', 'demo.myshopify.com')
+    vi.stubEnv('SHOPIFY_STOREFRONT_TOKEN', 'legacy')
+    expect(shopifyBuyConfigFor('dc-1001')).toBeNull()
+    expect(shopifyEnabled()).toBe(false)
+  })
   it('covers every seed product handle (29/29) with a store numeric id', () => {
     expect(seedProducts.length).toBeGreaterThanOrEqual(29)
     const handles = seedProducts.map((p) => p.handle)
@@ -51,6 +62,7 @@ describe('shopify-buy catalog map', () => {
   })
 
   it('config carries domain/token/moneyFormat only when both env keys are set', () => {
+    vi.stubEnv('SHOPIFY_ENABLED', 'true')
     const prev = { d: process.env.SHOPIFY_BUY_DOMAIN, t: process.env.SHOPIFY_BUY_TOKEN }
     process.env.SHOPIFY_BUY_DOMAIN = 'demo.myshopify.com'
     process.env.SHOPIFY_BUY_TOKEN = 'tok123'
