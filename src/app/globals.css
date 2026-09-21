@@ -4,6 +4,12 @@
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
+:root {
+  --font-geist-sans: 'Geist Variable', sans-serif;
+  --font-geist-mono: 'Geist Mono Variable', monospace;
+  --font-newsreader: 'Newsreader Variable', Georgia, serif;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

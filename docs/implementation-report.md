@@ -1,3 +1,5 @@
+> Current commerce implementation (2026-09-21): see [commerce-mvp-report.md](commerce-mvp-report.md). This file remains a historical report.
+
 # Implementation Report — Evoloop 3D-Printed Shoe Storefront (feat/shoe-store)
 
 > **时效标注（2026-09-15 追加）：** 本报告是 HEAD `83fd694` 的**历史快照**，以下三处已与当前 HEAD 不符。
