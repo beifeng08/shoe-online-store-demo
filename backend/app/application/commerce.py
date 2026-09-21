@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from typing import Any
 
@@ -7,6 +8,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.domain.models import (
     AuditLog,
     Cart,
@@ -80,6 +82,8 @@ def order_view(db: Session, order: Order) -> dict:
     return dict(
         id=order.id,
         status=order.status,
+        expires_at=as_utc(order.expires_at).isoformat() if order.expires_at else None,
+        cancellation_reason=order.cancellation_reason,
         total=str(order.total),
         currency=order.currency,
         payment_enabled=False,
@@ -106,11 +110,17 @@ def create_order(db: Session, session_id: str, key: str) -> dict:
         select(Order).where(Order.cart_id == session_id, Order.idempotency_key == key)
     )
     if existing:
+        expire_if_due(db, existing)
         return order_view(db, existing)
     cart = cart_view(db, session_id, check_stock=True)
     if not cart["items"]:
         raise HTTPException(409, "empty_cart")
-    order = Order(cart_id=session_id, idempotency_key=key, total=Decimal(cart["total"]))
+    order = Order(
+        cart_id=session_id,
+        idempotency_key=key,
+        total=Decimal(cart["total"]),
+        expires_at=datetime.now(UTC) + timedelta(seconds=settings.reservation_ttl_seconds),
+    )
     db.add(order)
     db.flush()
     for item in cart["items"]:
@@ -144,17 +154,28 @@ def create_order(db: Session, session_id: str, key: str) -> dict:
             order_id=order.id,
             quantity=item["quantity"],
         )
-    audit(db, order.id, "order_created", status="pending_payment", total=cart["total"])
+    audit(
+        db,
+        order.id,
+        "order_created",
+        status="pending_payment",
+        total=cart["total"],
+        expires_at=order.expires_at.isoformat() if order.expires_at else None,
+    )
     db.execute(delete(CartItem).where(CartItem.cart_id == session_id))
     db.flush()
     return order_view(db, order)
 
 
-def cancel_order(db: Session, session_id: str, order_id: str) -> dict:
-    lock_cart(db, session_id)
-    order = owned_order(db, session_id, order_id)
-    if order.status == "cancelled":
-        return order_view(db, order)
+def as_utc(value: datetime) -> datetime:
+    # SQLite returns timezone-naive datetimes; PostgreSQL returns aware datetimes.
+    return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
+
+
+def release_order(db: Session, order: Order, reason: str) -> None:
+    """Caller must hold the cart write lock before reading the order."""
+    if order.status != "pending_payment":
+        return
     reservations = db.scalars(
         select(Reservation)
         .where(Reservation.order_id == order.id, Reservation.status == "active")
@@ -176,10 +197,37 @@ def cancel_order(db: Session, session_id: str, order_id: str) -> dict:
             "inventory_released",
             order_id=order.id,
             quantity=reservation.quantity,
+            reason=reason,
         )
     order.status = "cancelled"
-    audit(db, order.id, "order_cancelled", status="cancelled")
+    order.cancellation_reason = reason
+    audit(
+        db,
+        order.id,
+        "order_expired" if reason == "expired" else "order_cancelled",
+        status="cancelled",
+        reason=reason,
+    )
     db.flush()
+
+
+def expire_if_due(db: Session, order: Order, *, now: datetime | None = None) -> bool:
+    """Must run under the same session/cart lock used by checkout and cancellation."""
+    if (
+        order.status != "pending_payment"
+        or order.expires_at is None
+        or as_utc(order.expires_at) > as_utc(now or datetime.now(UTC))
+    ):
+        return False
+    release_order(db, order, "expired")
+    return True
+
+
+def cancel_order(db: Session, session_id: str, order_id: str) -> dict:
+    lock_cart(db, session_id)
+    order = owned_order(db, session_id, order_id)
+    if not expire_if_due(db, order):
+        release_order(db, order, "customer_cancelled")
     return order_view(db, order)
 
 

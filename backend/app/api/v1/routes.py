@@ -9,6 +9,7 @@ from app.application.commerce import (
     cancel_order,
     cart_view,
     create_order,
+    expire_if_due,
     lock_cart,
     order_view,
     owned_order,
@@ -127,7 +128,10 @@ def checkout(
 
 @router.get("/orders/{order_id}")
 def get_order(order_id: str, db: DB, sid: SessionID) -> dict:
-    return order_view(db, owned_order(db, sid, order_id))
+    lock_cart(db, sid)
+    order = owned_order(db, sid, order_id)
+    expire_if_due(db, order)
+    return order_view(db, order)
 
 
 @router.post("/orders/{order_id}/cancel")
@@ -139,5 +143,6 @@ def cancel(order_id: str, db: DB, sid: SessionID) -> dict:
 def payment(body: PaymentRequest, db: DB, sid: SessionID, response: Response) -> dict:
     lock_cart(db, sid)
     order = owned_order(db, sid, str(body.order_id))
+    expire_if_due(db, order)
     response.status_code = 200  # Machine-readable disabled result, never a payment success.
     return MockPaymentProvider().create_session(db, order)

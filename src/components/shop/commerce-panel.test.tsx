@@ -19,6 +19,8 @@ const order = {
   status: 'pending_payment',
   payment_enabled: false,
   message: '支付暂未开放',
+  expires_at: '2026-09-21T14:30:00+00:00',
+  cancellation_reason: null,
 }
 const ok = (data: unknown) => ({ ok: true, json: async () => data })
 beforeEach(() => sessionStorage.clear())
@@ -79,4 +81,37 @@ it('keeps the same idempotency key after an ambiguous network failure', async ()
     fetcher.mock.calls[2][1].headers['Idempotency-Key'],
   )
   await waitFor(() => expect(sessionStorage.getItem('evoloop-pending-checkout')).toBeNull())
+})
+
+it('shows the reservation deadline and refreshes to expired without enabling payment', async () => {
+  const fetcher = vi
+    .fn()
+    .mockResolvedValueOnce(ok(order))
+    .mockResolvedValueOnce(
+      ok({
+        ...order,
+        status: 'cancelled',
+        cancellation_reason: 'expired',
+      }),
+    )
+  vi.stubGlobal('fetch', fetcher)
+  const { container } = render(<CommercePanel mode="order" orderId="order-1" />)
+  await screen.findByText('状态：待支付（pending_payment）')
+  expect(container.querySelector('time')).toHaveAttribute('dateTime', order.expires_at)
+  fireEvent.click(screen.getByRole('button', { name: '刷新订单状态' }))
+  expect(await screen.findByText('状态：已过期')).toBeInTheDocument()
+  expect(screen.getByText(/库存已释放/)).toBeInTheDocument()
+  expect(screen.getByRole('status')).toHaveTextContent('支付暂未开放')
+  expect(screen.queryByRole('button', { name: '取消订单并释放库存' })).not.toBeInTheDocument()
+})
+
+it('renders historical cancelled orders with no reservation deadline', async () => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockResolvedValue(ok({ ...order, status: 'cancelled', expires_at: null })),
+  )
+  const { container } = render(<CommercePanel mode="order" orderId="order-1" />)
+  await screen.findByText('状态：已取消')
+  expect(container.querySelector('time')).toBeNull()
+  expect(screen.getByText(/库存已释放/)).toBeInTheDocument()
 })

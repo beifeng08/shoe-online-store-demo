@@ -89,3 +89,13 @@ authorized committing it. Local `.env.local` selects the Python API at
 `http://127.0.0.1:8000` and keeps Shopify disabled; `backend/.env` selects local SQLite.
 These local settings, databases, virtual environments and verification logs are ignored
 by Git and are not part of the source commit.
+
+## Follow-up branch: reservation expiry
+
+The next feature branch is `codex/expire-inventory-reservations`. It adds `expires_at` and
+`cancellation_reason` through Alembic, a 30-minute default reservation TTL, an in-process
+bounded sweeper plus `python -m app.expire_orders`, due-date checks on order/payment/cancel
+requests, and UI refresh/deadline copy. The same transaction releases inventory and writes
+audits. It does not introduce Redis, Celery or a paid provider. Its test suite covers 30 Python
+cases, including migration preservation, concurrent workers, rollback, batch catch-up,
+transient worker recovery and historical order snapshots.

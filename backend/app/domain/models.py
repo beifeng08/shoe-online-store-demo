@@ -7,6 +7,7 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    Index,
     Numeric,
     String,
     UniqueConstraint,
@@ -84,6 +85,7 @@ class Order(Base):
         UniqueConstraint("cart_id", "idempotency_key"),
         CheckConstraint("status IN ('pending_payment', 'cancelled')"),
         CheckConstraint("total >= 0"),
+        Index("ix_orders_status_expires_at", "status", "expires_at"),
     )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=identifier)
     cart_id: Mapped[str] = mapped_column(ForeignKey("carts.id"), index=True)
@@ -94,6 +96,8 @@ class Order(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    cancellation_reason: Mapped[str | None] = mapped_column(String(30))
 
 
 class OrderItem(Base):

@@ -107,13 +107,38 @@ export function CommercePanel({
       {order && (
         <div className="space-y-2 rounded-xl border border-neutral-200 bg-surface p-5">
           <p className="break-all">订单编号：{order.id}</p>
-          <p>状态：{order.status === 'cancelled' ? '已取消' : '待支付（pending_payment）'}</p>
+          <p>
+            状态：
+            {order.status === 'cancelled'
+              ? order.cancellation_reason === 'expired'
+                ? '已过期'
+                : '已取消'
+              : '待支付（pending_payment）'}
+          </p>
           <p role="status" className="font-semibold">
             支付暂未开放
           </p>
           <p className="text-sm text-neutral-600">
-            没有扣款。待支付订单会保留库存，取消订单即可释放。
+            {order.status === 'cancelled'
+              ? '没有扣款。库存已释放，如需购买请重新加入购物车。'
+              : '没有扣款。库存将在订单到期后自动释放，也可提前取消订单。'}
           </p>
+          {order.status === 'pending_payment' && order.expires_at && (
+            <p className="text-sm text-neutral-600">
+              库存预留截止：
+              <time dateTime={order.expires_at}>{new Date(order.expires_at).toLocaleString()}</time>
+            </p>
+          )}
+          <button
+            type="button"
+            className="text-sm underline"
+            disabled={busy}
+            onClick={() =>
+              act(async () => setOrder(await commerceRequest<OrderView>(`orders/${order.id}`)))
+            }
+          >
+            刷新订单状态
+          </button>
           <Link href={`/orders/${order.id}`} className="text-sm underline">
             订单永久链接（仅当前购物会话可查看）
           </Link>

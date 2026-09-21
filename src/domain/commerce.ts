@@ -28,6 +28,8 @@ export interface CartView {
 export interface OrderView extends CartView {
   id: string
   status: 'pending_payment' | 'cancelled'
+  expires_at: string | null
+  cancellation_reason: 'expired' | 'customer_cancelled' | null
   payment_enabled: false
   message: string
 }

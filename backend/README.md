@@ -5,6 +5,12 @@ external webhook, or real payment provider is required. All amounts are calculat
 with Decimal and serialized as decimal strings. The only provider is
 `MockPaymentProvider`: `payment_disabled`, `charged=false`; it cannot mark an order paid.
 
+Pending orders reserve inventory for 30 minutes by default. The FastAPI lifespan runs a
+bounded in-process sweeper every 30 seconds; `python -m app.expire_orders` also runs one
+manual pass. Both paths use the same transactional release code as cancellation. Set
+`RESERVATION_TTL_SECONDS`, `RESERVATION_SWEEP_SECONDS`, `RESERVATION_SWEEP_BATCH_SIZE` or
+`RESERVATION_SWEEPER_ENABLED=false` in `backend/.env` when needed. No external queue is used.
+
 ## Local setup (PowerShell, from repository root)
 
 ```powershell
@@ -86,6 +92,13 @@ must be an integer from 1 to 99. Prices, stock and statuses sent by a client are
 ignored. Creating an order re-reads persisted variant prices, snapshots title/SKU/
 color/size/unit price, reserves inventory and clears the cart in one transaction.
 Each transaction commits before FastAPI sends its response.
+
+Expired orders remain readable with their original line snapshots and order ID, are returned
+as `status=cancelled` with `cancellation_reason=expired`, and have `expires_at` in the response.
+Reads, cancellation and disabled payment requests perform a due-date check even when the
+sweeper is disabled. Retrying an expired idempotency key returns the original order and never
+re-locks stock. The migration grants existing pending orders a one-time 30-minute grace period;
+terminal historical orders remain unchanged.
 
 A cart row write lock serializes mutations within a session. Across sessions,
 conditional SQL inventory updates prevent overselling; inventory rows are updated
