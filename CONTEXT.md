@@ -159,6 +159,9 @@ PDP 挂载时注册、卸载时（若仍指向自己）清空；FAB 据此在 `s
 - Money crosses HTTP as decimal strings. The browser submits variant IDs/quantities, never trusted prices.
 - `available` excludes `reserved`; creation atomically transfers units, cancellation reverses it.
 - Orders are only `pending_payment` or `cancelled`. Mock payment never charges or marks paid.
+- Pending orders have a persisted UTC deadline (30 minutes by default). Expiry cancels with
+  `cancellation_reason=expired`, releases stock and writes audits in the same transaction.
+  Repeated expiry/cancellation or idempotency retries never release twice or re-reserve stock.
 - `(cart_id, idempotency_key)` identifies one durable order result; retry returns that order.
 - Anonymous session UUIDs are bearer credentials; Next stores them in an essential HttpOnly cookie.
 - Legacy TS catalog/search/AI remains; Python schema changes use Alembic only.

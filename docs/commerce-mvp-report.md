@@ -77,8 +77,9 @@ and stock restoration. Smoke orders remain cancelled in the local demo DB with a
 No real payment or paid state, login, Shopify sync, Redis, queues, discounts, refunds,
 shipping integration, full administration or AI migration. No external provider is contacted
 by commerce. PostgreSQL DDL compatibility is checked separately; PostgreSQL runtime and
-load testing remain pending. Pending reservations require cancellation to release; abandoned
-sessions can leave reservations. Cookie loss prevents access; anonymous IDs are bearer secrets.
+load testing remain pending. The original MVP required manual cancellation to release stock;
+the reservation-expiry follow-up below adds automatic release. Downtime or a sweep backlog
+can still delay release. Cookie loss prevents access; anonymous IDs are bearer secrets.
 TS display/search catalog and Python commerce catalog can diverge after future edits until a
 deliberate next migration. Catalog seed stock is demo stock (10 per variant), not supplier stock.
 
@@ -99,3 +100,23 @@ requests, and UI refresh/deadline copy. The same transaction releases inventory 
 audits. It does not introduce Redis, Celery or a paid provider. Its test suite covers 30 Python
 cases, including migration preservation, concurrent workers, rollback, batch catch-up,
 transient worker recovery and historical order snapshots.
+
+
+## Follow-up verification — 2026-09-22
+
+The `verify` workflow now includes a Python 3.12 job alongside Node 22/24. It installs
+`backend/requirements-dev.lock`, runs Ruff lint/format and mypy, migrates a fresh SQLite
+database to head, checks schema drift, runs pytest and compiles application/migration/test
+modules. Actions are pinned to commit SHAs. This job does not claim PostgreSQL runtime coverage.
+
+Local verification after this addition: 30 Python tests passed (two upstream deprecation
+warnings), Ruff lint/format passed (25 files), mypy passed (18 source files), fresh Alembic
+upgrade and drift checks passed, and `python -m compileall -q backend` passed from the
+repository root. Workflow Prettier and `git diff --check` passed. No frontend application code
+changed in this CI/documentation follow-up; the preceding reservation-expiry verification
+passed 397 tests in 66 files, lint, typecheck, boundary checks and a 44-page production build.
+
+PR #6 remains a draft dependent on the unmerged MVP PR #5. Once that dependency is merged,
+replay only the follow-up changes onto the resulting main and revalidate. The earlier Node
+22/24 GitHub jobs passed; the Vercel preview requires deployment authorization from the
+upstream team. Neither default branch nor deployment permissions were changed.

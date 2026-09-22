@@ -128,9 +128,15 @@ ORM auto-creation. They cover price tampering, snapshots, stock, ownership,
 concurrent idempotency and competing sessions. PostgreSQL-compatible schema/SQL
 is provided, but PostgreSQL runtime integration has not been executed locally.
 
+GitHub Actions also runs these backend checks on Python 3.12, using the pinned
+`requirements-dev.lock` and a fresh SQLite database migrated to head. PostgreSQL
+runtime coverage remains a separate follow-up.
+
 ## MVP limitations
 
-- Pending orders reserve stock until explicitly cancelled; no automatic expiry.
+- Pending orders expire after 30 minutes by default. Release occurs on the next bounded
+  sweep or order access; server downtime and sweep backlogs can delay release. Run
+  `python -m app.expire_orders` for a manual pass when needed.
 - Losing the anonymous cookie loses access to orders; no account recovery or admin UI.
 - The original TS display/search/AI catalog remains. Python is authoritative for
   purchasable variants, prices, inventory, carts and orders. Future catalog edits

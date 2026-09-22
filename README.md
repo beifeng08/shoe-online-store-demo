@@ -213,8 +213,9 @@ src/
 
 ## Known limitations
 
-- Payment is disabled. Pending orders reserve inventory until explicitly cancelled; no automatic
-  expiration job exists. Losing the anonymous session cookie loses access to its orders.
+- Payment is disabled. Pending orders expire after 30 minutes by default; a bounded in-process
+  sweep releases inventory every 30 seconds. Downtime or a backlog can delay release.
+  Losing the anonymous session cookie loses access to its orders.
 - The TypeScript display/search catalog and Python commerce catalog start from the same snapshot;
   future edits need a deliberate migration/sync step. Python always re-reads prices at checkout.
 - PostgreSQL-compatible schema and SQL are provided; local runtime tests use SQLite.
