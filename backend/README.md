@@ -132,6 +132,16 @@ GitHub Actions also runs these backend checks on Python 3.12, using the pinned
 `requirements-dev.lock` and a fresh SQLite database migrated to head. PostgreSQL
 runtime coverage remains a separate follow-up.
 
+Each API test snapshots the migrated, seeded SQLite template with the native backup
+API. Copying only the main `.db` file can omit committed schema or rows still in
+the WAL and cause intermittent missing-table failures. The source opens read-only,
+and both backup connections close explicitly; a missing source fails instead of
+creating an empty database. `tests/test_database_snapshot.py` reproduces the
+main-file copy failure while committed pages remain in WAL, checks that backups
+exclude uncommitted writes, and verifies that changes to one copy leave the
+template and other copies intact. Run it with
+`python -m pytest -q tests/test_database_snapshot.py` from `backend/`.
+
 ## MVP limitations
 
 - Pending orders expire after 30 minutes by default. Release occurs on the next bounded
