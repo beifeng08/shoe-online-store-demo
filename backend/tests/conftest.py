@@ -1,4 +1,5 @@
-import shutil
+import sqlite3
+from contextlib import closing
 from pathlib import Path
 from uuid import uuid4
 
@@ -29,12 +30,25 @@ def template(tmp_path_factory):
     return path
 
 
+@pytest.fixture(scope="session")
+def snapshot_database():
+    def snapshot(source: Path, target: Path) -> None:
+        source_uri = f"{source.resolve().as_uri()}?mode=ro"
+        with (
+            closing(sqlite3.connect(source_uri, uri=True)) as reader,
+            closing(sqlite3.connect(target)) as writer,
+        ):
+            reader.backup(writer)
+
+    return snapshot
+
+
 @pytest.fixture
-def commerce(template, tmp_path, monkeypatch):
+def commerce(template, tmp_path, monkeypatch, snapshot_database):
     # API tests use isolated DBs; worker lifecycle has dedicated tests with its own DB.
     monkeypatch.setattr(settings, "reservation_sweeper_enabled", False)
     path = tmp_path / "commerce.db"
-    shutil.copyfile(template, path)
+    snapshot_database(template, path)
     engine = make_engine(f"sqlite:///{path.as_posix()}")
 
     def session():
