@@ -93,6 +93,18 @@ ignored. Creating an order re-reads persisted variant prices, snapshots title/SK
 color/size/unit price, reserves inventory and clears the cart in one transaction.
 Each transaction commits before FastAPI sends its response.
 
+Successful health, catalog, cart, checkout, order and disabled-payment responses are
+validated by explicit Pydantic response models and described in OpenAPI. Amounts
+remain nonnegative decimal strings with exactly two fractional digits; quantities
+and stock remain integers. Only pending/cancelled orders and disabled Mock payments
+are accepted. Internal fields are filtered out, including nested product fields.
+Response validation runs before the transaction commits: an invalid checkout or
+payment response rolls back its writes. These contracts preserve existing response
+field names, nullable expiry fields and HTTP status codes; no migration is needed.
+Run the regression checks from the backend directory:
+
+    python -m pytest -q tests/test_response_contract.py
+
 Expired orders remain readable with their original line snapshots and order ID, are returned
 as `status=cancelled` with `cancellation_reason=expired`, and have `expires_at` in the response.
 Reads, cancellation and disabled payment requests perform a due-date check even when the
