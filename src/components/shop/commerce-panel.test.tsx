@@ -117,3 +117,24 @@ it('renders historical cancelled orders with no reservation deadline', async () 
   expect(container.querySelector('time')).toBeNull()
   expect(screen.getByText(/Inventory has been released/)).toBeInTheDocument()
 })
+
+it('keeps the checkout key when a successful HTTP response has an invalid order', async () => {
+  const fetcher = vi
+    .fn()
+    .mockResolvedValueOnce(ok(cart))
+    .mockResolvedValueOnce(ok({ ...order, status: 'paid' }))
+    .mockResolvedValueOnce(ok(order))
+  vi.stubGlobal('fetch', fetcher)
+  render(<CommercePanel mode="checkout" />)
+  await screen.findByText('Urban Bloom')
+  fireEvent.click(screen.getByRole('button', { name: 'Create pending order' }))
+  expect(await screen.findByRole('alert')).toHaveTextContent('invalid response')
+  expect(screen.queryByText('Order ID: order-1')).not.toBeInTheDocument()
+  expect(sessionStorage.getItem('evoloop-pending-checkout')).toBeTruthy()
+  fireEvent.click(screen.getByRole('button', { name: 'Retry order request' }))
+  await screen.findByText('Order ID: order-1')
+  expect(fetcher.mock.calls[1][1].headers['Idempotency-Key']).toBe(
+    fetcher.mock.calls[2][1].headers['Idempotency-Key'],
+  )
+  expect(sessionStorage.getItem('evoloop-pending-checkout')).toBeNull()
+})

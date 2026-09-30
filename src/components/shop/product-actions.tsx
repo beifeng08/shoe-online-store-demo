@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore, useEffect, useState, type ReactNode } from 'react'
 import type { CommerceProduct } from '@/domain/commerce'
+import { parseCommerceProduct } from '@/domain/commerce-response'
 import { commerceRequest } from '@/lib/commerce-client'
 import type { CanonicalSize } from '@/domain/product'
 import type { ProductView } from '@/domain/product'
@@ -42,7 +43,7 @@ export function ProductActions({ product, buyConfig = null, children }: ProductA
   useEffect(() => {
     if (storeLive) return
     let active = true
-    commerceRequest<CommerceProduct>(`catalog/products/${product.handle}`)
+    commerceRequest(`catalog/products/${product.handle}`, parseCommerceProduct)
       .then((data) => {
         if (active) setCommerce(data)
       })
