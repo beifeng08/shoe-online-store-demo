@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { CartView, OrderView } from '@/domain/commerce'
+import { parseCartView, parseOrderView } from '@/domain/commerce-response'
 import { commerceRequest } from '@/lib/commerce-client'
 import { Button } from '@/components/ui/button'
 
@@ -26,16 +27,19 @@ export function CommercePanel({
     let active = true
     const request =
       mode === 'order'
-        ? commerceRequest<OrderView>(`orders/${orderId}`)
-        : commerceRequest<CartView>(
+        ? commerceRequest(`orders/${orderId}`, parseOrderView).then((data) => {
+            if (active) setOrder(data)
+          })
+        : commerceRequest(
             mode === 'checkout' ? 'checkout/preview' : 'cart',
+            parseCartView,
             mode === 'checkout' ? { method: 'POST' } : undefined,
-          )
+          ).then((data) => {
+            if (active) setCart(data)
+          })
     request
-      .then((data) => {
+      .then(() => {
         if (!active) return
-        if (mode === 'order') setOrder(data as OrderView)
-        else setCart(data)
         setRetryPending(Boolean(sessionStorage.getItem(pendingKey)))
       })
       .catch((e: Error) => {
@@ -67,8 +71,9 @@ export function CommercePanel({
   function change(id: string, quantity?: number) {
     return act(async () =>
       setCart(
-        await commerceRequest<CartView>(
+        await commerceRequest(
           `cart/items/${id}`,
+          parseCartView,
           quantity == null
             ? { method: 'DELETE' }
             : { method: 'PATCH', body: JSON.stringify({ quantity }) },
@@ -82,7 +87,7 @@ export function CommercePanel({
       const key = sessionStorage.getItem(pendingKey) ?? crypto.randomUUID()
       sessionStorage.setItem(pendingKey, key)
       setRetryPending(true)
-      const created = await commerceRequest<OrderView>('checkout/create-order', {
+      const created = await commerceRequest('checkout/create-order', parseOrderView, {
         method: 'POST',
         headers: { 'Idempotency-Key': key },
       })
@@ -134,7 +139,7 @@ export function CommercePanel({
             className="text-sm underline"
             disabled={busy}
             onClick={() =>
-              act(async () => setOrder(await commerceRequest<OrderView>(`orders/${order.id}`)))
+              act(async () => setOrder(await commerceRequest(`orders/${order.id}`, parseOrderView)))
             }
           >
             Refresh order status
@@ -214,7 +219,9 @@ export function CommercePanel({
           onClick={() =>
             act(async () =>
               setOrder(
-                await commerceRequest<OrderView>(`orders/${order.id}/cancel`, { method: 'POST' }),
+                await commerceRequest(`orders/${order.id}/cancel`, parseOrderView, {
+                  method: 'POST',
+                }),
               ),
             )
           }

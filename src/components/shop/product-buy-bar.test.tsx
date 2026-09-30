@@ -22,7 +22,10 @@ describe('Python cart purchase entry', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
   it('submits only variant identity and quantity and reports success', async () => {
-    const fetcher = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ items: [] }) })
+    const fetcher = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], total: '0.00', currency: 'USD' }),
+    })
     vi.stubGlobal('fetch', fetcher)
     render(<ProductBuyBar {...props} />)
     fireEvent.click(screen.getByRole('button', { name: 'Add to cart' }))
@@ -37,6 +40,13 @@ describe('Python cart purchase entry', () => {
     render(<ProductBuyBar {...props} />)
     fireEvent.click(screen.getByRole('button', { name: 'Add to cart' }))
     expect(await screen.findByText('Service offline')).toBeInTheDocument()
+    expect(screen.queryByText('Added to cart.')).not.toBeInTheDocument()
+  })
+  it('rejects an invalid successful response without claiming an item was added', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) }))
+    render(<ProductBuyBar {...props} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Add to cart' }))
+    expect(await screen.findByText(/invalid response/)).toBeInTheDocument()
     expect(screen.queryByText('Added to cart.')).not.toBeInTheDocument()
   })
 })

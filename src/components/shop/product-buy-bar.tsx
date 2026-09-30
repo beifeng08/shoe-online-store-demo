@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { CommerceVariant } from '@/domain/commerce'
+import { parseCartView } from '@/domain/commerce-response'
 import { commerceRequest } from '@/lib/commerce-client'
 
 export function ProductBuyBar({
@@ -26,7 +27,7 @@ export function ProductBuyBar({
     setBusy(true)
     setMessage('')
     try {
-      await commerceRequest('cart/items', {
+      await commerceRequest('cart/items', parseCartView, {
         method: 'POST',
         body: JSON.stringify({ variant_id: variant.id, quantity: 1 }),
       })

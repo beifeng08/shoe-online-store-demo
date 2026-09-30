@@ -79,7 +79,7 @@ const multiColor = {
 
 describe('PDP colorway picker (decision #16: color selectable pre-order)', () => {
   it('resolves color and size to the backend variant ID, regardless of array ordering', async () => {
-    const fetcher = vi.fn().mockResolvedValue({
+    const fetcher = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         variants: [
@@ -101,6 +101,10 @@ describe('PDP colorway picker (decision #16: color selectable pre-order)', () =>
           },
         ],
       }),
+    })
+    fetcher.mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], total: '0.00', currency: 'USD' }),
     })
     vi.stubGlobal('fetch', fetcher)
     render(<ProductActions product={multiColor} buyUrl={null} />)
