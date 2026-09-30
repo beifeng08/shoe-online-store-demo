@@ -11,6 +11,7 @@ from sqlalchemy import text
 from app.api.v1.routes import DB, router
 from app.application.expiry import expiry_loop
 from app.config import settings
+from app.schemas.responses import HealthResponse
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("commerce")
@@ -53,7 +54,7 @@ async def request_log(
     return response
 
 
-@app.get("/health")
+@app.get("/health", response_model=HealthResponse)
 def health(db: DB) -> dict:
     db.execute(text("SELECT version_num FROM alembic_version"))
     return {"status": "ok", "payment_enabled": False}

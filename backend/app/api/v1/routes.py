@@ -17,6 +17,7 @@ from app.application.commerce import (
 from app.dependencies import anonymous_session, database
 from app.domain.models import CartItem, Inventory, Media, Product, Variant
 from app.schemas.commerce import AddItem, PaymentRequest, Quantity
+from app.schemas.responses import CartResponse, OrderResponse, PaymentResponse, ProductResponse
 
 router = APIRouter(prefix="/api/v1")
 DB = Annotated[Session, Depends(database, scope="function")]
@@ -53,12 +54,12 @@ def product_view(db: Session, product: Product) -> dict:
     )
 
 
-@router.get("/catalog/products")
+@router.get("/catalog/products", response_model=list[ProductResponse])
 def products(db: DB) -> list[dict]:
     return [product_view(db, p) for p in db.scalars(select(Product).order_by(Product.handle))]
 
 
-@router.get("/catalog/products/{handle}")
+@router.get("/catalog/products/{handle}", response_model=ProductResponse)
 def product(handle: str, db: DB) -> dict:
     p = db.scalar(select(Product).where(Product.handle == handle))
     if p is None:
@@ -66,12 +67,12 @@ def product(handle: str, db: DB) -> dict:
     return product_view(db, p)
 
 
-@router.get("/cart")
+@router.get("/cart", response_model=CartResponse)
 def cart(db: DB, sid: SessionID) -> dict:
     return cart_view(db, sid)
 
 
-@router.post("/cart/items")
+@router.post("/cart/items", response_model=CartResponse)
 def add_item(body: AddItem, db: DB, sid: SessionID) -> dict:
     lock_cart(db, sid)
     variant_id = str(body.variant_id)
@@ -98,7 +99,7 @@ def owned_item(db: Session, sid: str, item_id: str) -> CartItem:
     return item
 
 
-@router.patch("/cart/items/{item_id}")
+@router.patch("/cart/items/{item_id}", response_model=CartResponse)
 def patch_item(item_id: str, body: Quantity, db: DB, sid: SessionID) -> dict:
     lock_cart(db, sid)
     owned_item(db, sid, item_id).quantity = body.quantity
@@ -106,7 +107,7 @@ def patch_item(item_id: str, body: Quantity, db: DB, sid: SessionID) -> dict:
     return cart_view(db, sid)
 
 
-@router.delete("/cart/items/{item_id}")
+@router.delete("/cart/items/{item_id}", response_model=CartResponse)
 def delete_item(item_id: str, db: DB, sid: SessionID) -> dict:
     lock_cart(db, sid)
     db.delete(owned_item(db, sid, item_id))
@@ -114,19 +115,19 @@ def delete_item(item_id: str, db: DB, sid: SessionID) -> dict:
     return cart_view(db, sid)
 
 
-@router.post("/checkout/preview")
+@router.post("/checkout/preview", response_model=CartResponse)
 def preview(db: DB, sid: SessionID) -> dict:
     return cart_view(db, sid, check_stock=True)
 
 
-@router.post("/checkout/create-order")
+@router.post("/checkout/create-order", response_model=OrderResponse)
 def checkout(
     db: DB, sid: SessionID, idempotency_key: Annotated[str, Header(min_length=8, max_length=128)]
 ) -> dict:
     return create_order(db, sid, idempotency_key)
 
 
-@router.get("/orders/{order_id}")
+@router.get("/orders/{order_id}", response_model=OrderResponse)
 def get_order(order_id: str, db: DB, sid: SessionID) -> dict:
     lock_cart(db, sid)
     order = owned_order(db, sid, order_id)
@@ -134,12 +135,12 @@ def get_order(order_id: str, db: DB, sid: SessionID) -> dict:
     return order_view(db, order)
 
 
-@router.post("/orders/{order_id}/cancel")
+@router.post("/orders/{order_id}/cancel", response_model=OrderResponse)
 def cancel(order_id: str, db: DB, sid: SessionID) -> dict:
     return cancel_order(db, sid, order_id)
 
 
-@router.post("/payments/session")
+@router.post("/payments/session", response_model=PaymentResponse)
 def payment(body: PaymentRequest, db: DB, sid: SessionID, response: Response) -> dict:
     lock_cart(db, sid)
     order = owned_order(db, sid, str(body.order_id))
