@@ -43,29 +43,32 @@ before the exact deadline does not release stock; repeated scans release at most
 `RESERVATION_TTL_SECONDS`, `RESERVATION_SWEEP_SECONDS`, `RESERVATION_SWEEP_BATCH_SIZE` or
 `RESERVATION_SWEEPER_ENABLED=false` in `backend/.env` when needed. No external queue is used.
 
-## Local setup (PowerShell, from repository root)
+## Local setup (from repository root, any platform)
 
-```powershell
-python3.12 -m venv backend/.venv
-backend/.venv/Scripts/python.exe -m pip install -r backend/requirements-dev.lock
-Copy-Item backend/.env.example backend/.env
-cd backend
-.venv/Scripts/python.exe -m alembic upgrade head
-.venv/Scripts/python.exe -m app.seed
-.venv/Scripts/python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log
+Only the virtualenv creation line and the `uv` interpreter path differ by platform; every other
+command is identical because `npm run py` resolves the interpreter
+(see [../docs/agents/verification.md](../docs/agents/verification.md)).
+
+```bash
+python3.12 -m venv backend/.venv        # Windows: py -3.12 -m venv backend/.venv
+cp backend/.env.example backend/.env    # do not overwrite an existing backend/.env
+npm run py -- -m pip install -r requirements-dev.lock
+npm run db:migrate:python
+npm run py -- -m app.seed
+npm run py -- -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
 If using `uv` (the environment used during implementation):
 
-```powershell
+```bash
 uv venv --python python3.12 backend/.venv
-uv pip install --python backend/.venv/Scripts/python.exe -r backend/requirements-dev.lock
+uv pip install --python backend/.venv/bin/python -r backend/requirements-dev.lock   # Windows: backend/.venv/Scripts/python.exe
 ```
 
-For macOS/Linux use `python3.12` and `.venv/bin/python`. The lock file pins the
-versions actually verified. To resolve fresh versions from `pyproject.toml`, use
-`uv pip install --python .venv/Scripts/python.exe -r pyproject.toml --extra dev`
-from `backend/`.
+The lock file pins the versions actually verified. To resolve fresh versions from
+`pyproject.toml`, from `backend/` use
+`uv pip install --python .venv/bin/python -r pyproject.toml --extra dev`
+(Windows: `.venv/Scripts/python.exe`).
 
 Run from `backend/`: default database is `backend/commerce.db`. Backend `.env`
 is resolved independently of the Next.js environment. Set `DATABASE_URL` to
@@ -110,17 +113,16 @@ export would retire omitted identities. New product/variant identities or change
 handles are rejected; import or migrate identities explicitly before reconciliation.
 From `backend/`, preview first:
 
-```powershell
-.venv/Scripts/python.exe -m app.sync_catalog --catalog data/catalog.json
+```bash
+npm run py -- -m app.sync_catalog --catalog data/catalog.json
 ```
 
 The command returns `source_version`, `plan_version` and all proposed changes as
 JSON. SQLite preview uses a read-only connection; PostgreSQL preview uses a read-only
 transaction. Apply the same source only after reviewing its output:
 
-```powershell
-$reviewedPlan = 'copy-the-plan_version-from-the-preview'
-.venv/Scripts/python.exe -m app.sync_catalog --catalog data/catalog.json --apply --expect-plan $reviewedPlan
+```bash
+npm run py -- -m app.sync_catalog --catalog data/catalog.json --apply --expect-plan <copy-the-plan_version-from-the-preview>
 ```
 
 Application locks products in stable ID order, recalculates the plan and rejects a
@@ -203,9 +205,13 @@ To additionally run commerce, ownership, idempotency, concurrent inventory and
 failure/response-validation rollback tests on PostgreSQL, provision a dedicated
 empty database with a name ending in `_test`, then from `backend/` run:
 
-```powershell
+```bash
+# macOS / Linux
+COMMERCE_TEST_POSTGRES_URL='postgresql+psycopg://postgres:postgres@127.0.0.1:5432/commerce_test' npm run py -- -B -m pytest -q
+
+# Windows PowerShell
 $env:COMMERCE_TEST_POSTGRES_URL = 'postgresql+psycopg://postgres:postgres@127.0.0.1:5432/commerce_test'
-.venv/Scripts/python.exe -B -m pytest -q
+npm run py -- -B -m pytest -q
 Remove-Item Env:COMMERCE_TEST_POSTGRES_URL
 ```
 
@@ -235,9 +241,11 @@ are accepted. Internal fields are filtered out, including nested product fields.
 Response validation runs before the transaction commits: an invalid checkout or
 payment response rolls back its writes. These contracts preserve existing response
 field names, nullable expiry fields and HTTP status codes; no migration is needed.
-Run the regression checks from the backend directory:
+Run the response-contract regression checks:
 
-    python -m pytest -q tests/test_response_contract.py tests/test_contract_export.py
+```bash
+npm run py -- -m pytest -q tests/test_response_contract.py tests/test_contract_export.py
+```
 
 The frontend API types are generated from this application's OpenAPI, with explicit
 page projections and runtime validation retained. After changing a response model or
@@ -288,19 +296,22 @@ until it receives the order. Audit logs are committed with inventory/order chang
 
 ## Checks
 
-```powershell
-cd backend
-.venv/Scripts/python.exe -m pytest -q
-.venv/Scripts/python.exe -m ruff check app migrations tests
-.venv/Scripts/python.exe -m ruff format --check app migrations tests
-.venv/Scripts/python.exe -m mypy
-.venv/Scripts/python.exe -m alembic check
-cd ..
-backend/.venv/Scripts/python.exe -m compileall backend
+```bash
+# Everything at once (ruff format + ruff check + mypy + compileall + alembic check + pytest):
+npm run verify:python
+
+# Or individually:
+npm run check:python:format
+npm run check:python:lint
+npm run check:python:types
+npm run compile:python
+npm run check:python:migrate
+npm run test:python
+
 # Optional live HTTP integration check, with both services already running:
-backend/.venv/Scripts/python.exe scripts/smoke-commerce.py
+npm run smoke:commerce
 # Alternate local port, using a disposable/demo database:
-backend/.venv/Scripts/python.exe scripts/smoke-commerce.py --base-url http://127.0.0.1:3100
+npm run smoke:commerce -- --base-url http://127.0.0.1:3100
 ```
 
 Tests apply actual Alembic migrations to disposable SQLite databases, never runtime

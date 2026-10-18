@@ -27,6 +27,29 @@ test('generation is byte-stable and all committed artifacts match', async () => 
   await checkArtifacts(root, first)
 })
 
+test('generated types omit absent empty roots but retain declared contract sections', async () => {
+  const rendered = (await renderArtifacts(schema, samples)).get(artifacts[0])
+  assert.match(rendered, /export interface paths/)
+  assert.match(rendered, /export interface components/)
+  assert.doesNotMatch(rendered, /export (?:type|interface) (?:webhooks|\$defs)\b/)
+
+  const extended = structuredClone(schema)
+  extended.webhooks = {
+    inventoryChanged: {
+      post: {
+        operationId: 'inventoryChanged',
+        responses: { 204: { description: 'Accepted' } },
+      },
+    },
+  }
+  extended.$defs = { type: 'object', properties: { eventId: { type: 'string' } } }
+  const extendedTypes = (await renderArtifacts(extended, samples)).get(artifacts[0])
+  assert.match(extendedTypes, /export interface webhooks/)
+  assert.match(extendedTypes, /inventoryChanged/)
+  assert.match(extendedTypes, /export interface \$defs/)
+  assert.match(extendedTypes, /eventId/)
+})
+
 test('drift check rejects both Python schema drift and edited generated files without writing', async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), 'commerce-contract-test-'))
   try {

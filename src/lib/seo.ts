@@ -22,8 +22,6 @@ const resolveBaseUrl = (): URL => {
   }
 }
 
-export const siteUrl = (): URL => resolveBaseUrl()
-
 export const absoluteUrl = (pathname = '/'): string =>
   new URL(pathname, resolveBaseUrl()).toString()
 

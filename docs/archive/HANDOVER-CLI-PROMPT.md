@@ -1,3 +1,8 @@
+> ⚠️ **已归档（2026-10-12）。** 这是给已停用的 Aider 会话写的启动提示词。其中的
+> `Set-Location -LiteralPath 'F:\shoe-online-store-demo'`、`aider --read AGENTS.md …`
+> 与分支 `sql-certificate-and-AI-stock` 均已失效（既无该分支，也无该盘符）。
+> 保留仅为历史参考；当前入口是仓库根的 `AGENTS.md`。
+
 # Aider 暂停交接提示词
 
 这是一份给后续 Aider 会话使用的当前交接。当前任务已暂停；除非用户明确恢复，不要继续阶段 C，不要自行寻找并修复新发现的局部问题。

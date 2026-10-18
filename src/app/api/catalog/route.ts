@@ -25,12 +25,11 @@ export interface CatalogSummary {
 }
 
 export async function GET(req: Request): Promise<Response> {
-  let url: URL
-  try {
-    url = new URL(req.url)
-  } catch {
-    return Response.json([]) // 无效 URL → 空列表（只读端点，不抛 500）
-  }
+  // 不用 try/catch：req.url 必然可解析，catch 分支不可达（2026-10-12 审计核实后删除）。
+  // 依据：NextRequest 构造时即调 validateURL（next/dist/server/web/spec-extension/request.js
+  // 用 String(new URL(String(url)))），非法 URL 在构造阶段先抛；且 Request 本身无法用相对
+  // URL 构造。故不存在「无效 URL」输入，包 try/catch 只会让读者以为该端点容忍非法 URL。
+  const url = new URL(req.url)
   const raw = (url.searchParams.get('handles') ?? '').trim()
   if (!raw) return Response.json([])
   // 去重并保序；超上限只取前 30（防超大参数；后续有需要再谈分页）

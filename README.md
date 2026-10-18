@@ -2,7 +2,7 @@
 
 > **目录与 CI 更新（2026-10-02）：** 新增只读 `check:catalog` 门禁，比较 TypeScript 展示快照与 Python commerce 导入快照的稳定商品/变体键、价格、颜色、尺码和无尺码款；不会写入交易数据库。PostgreSQL TLS CI 在切换临时证书后执行完整服务重启，并确认 `ssl_cert_file`、`ssl_key_file` 已生效。当前结果与限制见 [目录漂移报告](./docs/catalog-drift-2026-10-02.md)。
 
-> **Current local integration (2026-10-01):** Commerce/security baseline `4177ec5`, error contracts/tracing `847e32e`, and actual PostgreSQL/TLS acceptance `128a762` are committed locally. AI now conservatively accounts for interrupted provider calls, recovers stale reservations and propagates stream cancellation. Read [HANDOVER.md](./HANDOVER.md), the [integration report](./docs/unified-baseline-2026-09-30.md), the [reliability update](./docs/reliability-2026-10-01.md), the [PostgreSQL acceptance report](./docs/postgres-acceptance-2026-10-01.md) and the [budget recovery report](./docs/ai-budget-recovery-2026-10-01.md). Local results do not establish deployment or remote CI success.
+> **Current local integration (2026-10-01):** Commerce/security baseline `4177ec5`, error contracts/tracing `847e32e`, and actual PostgreSQL/TLS acceptance `128a762` are committed locally. AI now conservatively accounts for interrupted provider calls, recovers stale reservations and propagates stream cancellation. Read [AGENTS.md](./AGENTS.md) and the [maintenance docs](./docs/agents/) for the current contract; the [older handover](./docs/archive/HANDOVER.md) is archived and no longer describes the current state. See also the [integration report](./docs/unified-baseline-2026-09-30.md), the [reliability update](./docs/reliability-2026-10-01.md), the [PostgreSQL acceptance report](./docs/postgres-acceptance-2026-10-01.md) and the [budget recovery report](./docs/ai-budget-recovery-2026-10-01.md). Local results do not establish deployment or remote CI success.
 
 **Evoloop** began as a student hackathon project and has grown into an **independent footwear
 project**. This repository is its consumer-facing storefront front-end — landing page, `/shop`
@@ -81,16 +81,17 @@ for the local runtime bootstrap.
 ### Start the local commerce service
 
 Use Python 3.12+ and the pinned backend dependencies; see [backend/README.md](./backend/README.md).
-From the repository root in PowerShell, with a new or backed-up local demo database:
+Run these from the repository root. **Only the virtualenv creation line differs by platform**; every
+other command is identical on macOS, Linux and Windows because `npm run py` resolves the interpreter
+(see [docs/agents/verification.md](./docs/agents/verification.md)).
 
-```powershell
-if (!(Test-Path backend/.venv/Scripts/python.exe)) { py -3.12 -m venv backend/.venv }
-backend/.venv/Scripts/python.exe -m pip install -r backend/requirements-dev.lock
-if (!(Test-Path backend/.env)) { Copy-Item backend/.env.example backend/.env }
-Set-Location backend
-.venv/Scripts/python.exe -m alembic upgrade head
-.venv/Scripts/python.exe -m app.seed
-.venv/Scripts/python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```bash
+python3.12 -m venv backend/.venv        # Windows: py -3.12 -m venv backend/.venv
+cp backend/.env.example backend/.env    # only if backend/.env does not exist yet
+npm run py -- -m pip install -r requirements-dev.lock
+npm run db:migrate:python
+npm run py -- -m app.seed
+npm run py -- -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 The Python service defaults to `APP_ENV=development` for local SQLite. Production
@@ -105,7 +106,7 @@ order at `/checkout`, and cancel it from `/orders/<id>`. Payment remains unavail
 Existing environment files must not be overwritten. Stop on any install/migration failure.
 
 For isolated alternate ports, the HTTP check accepts
-`backend/.venv/Scripts/python.exe scripts/smoke-commerce.py --base-url http://127.0.0.1:3100`.
+`npm run smoke:commerce -- --base-url http://127.0.0.1:3100`.
 It creates and cancels demo orders; run only against a disposable/demo database.
 
 **Catalog lives in the `products` table.** The catalog adapter defaults to reading the table;
@@ -133,12 +134,21 @@ tests); the reserved Shopify adapter takes priority only with `SHOPIFY_ENABLED=t
 | `npm run check:boundary` | Guards that `'use client'` modules carry no runtime `@/server/**` import. |
 | `npm run check:coupling` | Checks runtime import cycles, transitive client/domain boundaries and guardrails' budget port. |
 | `npm run check:catalog` | Read-only comparison of display/commerce snapshots and stable variant keys; set `CATALOG_DRIFT_DATABASE` for an optional local runtime DB check. |
+| `npm run check:slop` | Zero-dependency mechanical slop scan: unreachable files/exports/statements and stray-focus tests fail the gate; commented-out code, markers and conditional skips are reported for human judgement. Covers only what is mechanically decidable. |
+| `npm run check:slop:python` | Same scan for `backend/`, via the resolved Python interpreter; run `--self-test` to exercise its built-in false-positive regressions. |
 | `npm run lint` | ESLint over the repo |
 | `npm run test` | Vitest unit and integration tests on Node; see the dated integration report for actual counts. |
-| `npm run verify` | One-shot acceptance gate: formatting, typecheck, boundaries, coupling, catalog drift, lint and tests. |
+| `npm run verify` | One-shot acceptance gate: formatting, typecheck, boundaries, coupling, catalog drift, mechanical slop scan, lint and tests. |
 | `npm run test:watch` | Vitest watch mode |
+| `npm run preflight` | Deployment-before environment gate: `npm run preflight -- --environment production`. Refuses insecure production settings and never prints secret values. |
+| `npm run py -- …` | Any Python command; resolves the `backend/.venv` interpreter on every platform. |
+| `npm run verify:python` | Python gate: ruff format, ruff check, mypy, compileall, alembic check, slop scan, pytest. |
+| `npm run verify:all` | `verify` followed by `verify:python`. |
+| `npm run test:python` | `pytest -q` inside `backend/`. |
+| `npm run db:migrate:python` | `alembic upgrade head` inside `backend/`. |
+| `npm run smoke:commerce` | Live HTTP commerce smoke test; needs both services running and a disposable database. |
 
-The acceptance gate is **format:check + typecheck + check:boundary + check:coupling + check:catalog + lint + test** (`npm run verify`),
+The acceptance gate is **format:check + typecheck + check:boundary + check:coupling + check:catalog + check:slop + lint + test** (`npm run verify`),
 with **`npm run build`** run separately. CI is configured for Node 22 / 24 and Python 3.12;
 local results do not establish the current remote CI or deployment state.
 
@@ -198,7 +208,8 @@ See [`.env.example`](.env.example) for the annotated template. Summary:
 | `SHOPIFY_BUY_DOMAIN`, `SHOPIFY_BUY_TOKEN` | *(empty)* | Compatibility Buy Button credentials, independent of catalog credentials. Requires both plus `SHOPIFY_ENABLED=true`; disabled by default so PDPs use Python variants and cart. The external store was not tested in this integration. |
 
 Before a production build is started, set `APP_ENV=production` and run
-`npm run preflight -- -Environment production`. The explicit environment value is
+`npm run preflight -- --environment production` (the legacy PowerShell spelling
+`-Environment production` still works). The explicit environment value is
 required so a production build cannot silently inherit the local development mode.
 The preflight checks the deployment boundary without printing secrets: PostgreSQL is selected,
 TLS verification is enabled, the AI session secret is long enough, Python is not

@@ -17,6 +17,7 @@ import { useOptionalProductColorSelection } from './product-color-selection'
 
 interface ProductActionsProps {
   product: ProductView
+  // Reserved direct-store URL; not consumed until getBuyUrl enables that channel.
   buyUrl: string | null
   buyConfig?: ShopifyBuyConfig | null
   sizeSystem?: SizeSystem

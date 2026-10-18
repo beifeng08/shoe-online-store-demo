@@ -42,7 +42,8 @@ export function MySizeGuide() {
             'My size'
           )}
         </span>
-        <span className="text-xs font-normal text-neutral-400 group-open:hidden">
+        {/* 12px 真实文字：必须达 4.5:1，用仓库自订的正文下限 neutral-500（浅 4.74 / 深 4.66）。 */}
+        <span className="text-xs font-normal text-neutral-500 group-open:hidden">
           {savedMm != null ? 'Change or remove' : 'Get size-matched guidance'}
         </span>
         <span
