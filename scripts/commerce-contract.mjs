@@ -4,6 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import openapiTS, { astToString } from 'openapi-typescript'
+import ts from 'typescript'
 import { format, resolveConfig } from 'prettier'
 
 const executeFile = promisify(execFile)
@@ -77,7 +78,14 @@ export async function exportContract(samples = false) {
 export async function renderArtifacts(schema, samples) {
   assertLocalReferences(schema)
   const options = await resolveConfig(path.join(root, '.prettierrc.json'))
-  const generated = astToString(await openapiTS(schema, { alphabetize: true }))
+  const nodes = await openapiTS(schema, { alphabetize: true })
+  const generated = astToString(
+    nodes.filter((node) => {
+      if (!ts.isTypeAliasDeclaration(node)) return true
+      if (!['webhooks', '$defs'].includes(node.name.text)) return true
+      return Object.hasOwn(schema, node.name.text)
+    }),
+  )
   const banner = '// Generated from Python OpenAPI by npm run contract:generate. Do not edit.\n'
   return new Map([
     [artifacts[0], await format(banner + generated, { ...options, parser: 'typescript' })],

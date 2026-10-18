@@ -60,7 +60,12 @@ export function createGuardrails(
       if (!allowed) deny('turns')
       return history
     },
-    /** 回合结束后把 user/assistant 全文写回同一会话存储。 */
+    /**
+     * 回合结束后把 user/assistant 消息写回同一会话存储。
+     * 「全文」不成立：单条超长与超出窗口历史的裁剪发生在存储层
+     * （session-state.ts 的 MAX_HISTORY_MESSAGE_CHARS / HISTORY_TURNS）。
+     * 该裁剪是 I7「AI 护栏必须有界」的验收项，不得为保真而放宽。
+     */
     pushTurn(sessionKey: string, role: SessionMessage['role'], content: string) {
       sessions.push(sessionKey, role, content)
     },

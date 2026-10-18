@@ -1,46 +1,52 @@
+> ⚠️ **已归档（2026-10-12）。** 本文描述的分支与路径已不存在：本地没有
+> `sql-certificate-and-AI-stock` 分支，文中的 `F:\shoe-online-store-demo` 是 Windows 盘符。
+> 本文要求保留的未跟踪教学文档 `docs/从最小后端到交易闭环-图解教学-2026-09-30.md`
+> 经核验**已不存在**。当前有效状态请看 `AGENTS.md`、`docs/agents/`、`docs/implementation-report.md`；
+> **不要按本文的「当前状态」章节行动。**
+
 # 新 Agent 工作交接 — Evoloop
 
 > **提交与合并授权更新：2026-10-05。** 用户已明确要求主动发起合并和提交；下方检查点的“不提交、不 push”仅描述此前状态。本次提交仅包含已验收的 14 个文件，保留用户 `.gitignore` 与未跟踪教学文档。远端已核实存在上游 `WhatDamon/shoe-online-store-demo` 草稿 PR #14（`beifeng08:sql-certificate-and-AI-stock` → `main`）；提交前本地还有 26 个历史提交未推送。远端更新范围与关联自动部署副作用需明确后再推进，不强推、不部署、不操作业务数据库。局部测试通过不等于全仓阶段 C 或生产验收完成。
 
 > **续做验收：2026-10-05，仍基于 `f8e0964`，未提交。** 显式 UTC-8 `now` 的 SQLite expiry 漏选已独立复现，SQL 前复用 `as_utc`；回归覆盖 UTC-8/UTC/UTC+8/naive、截止前无写锁、精确截止释放一次及重复扫描。旧 AI smoke 的 `delta != error` 已复现，脚本改为签名 Cookie 合同；最新生产构建两个隔离 Mock 实例共 17 次 HTTP、229 条断言通过，包含第三回合 `turns` 拒绝。路由测试另验证实际 AI 入参为 Cookie UUID、不是完整签名串。最终 verify 593 passed/16 skipped；Python 109 passed/1 skipped；Ruff/format/mypy/compileall、全新 SQLite Alembic、45/45 构建通过。测试目录保留，临时服务全部停止，用户 `.gitignore` 与教学文档哈希保持一致。无新 schema/依赖/配置项；PG/TLS、浏览器 HTTPS、远端 CI、部署与其余阶段 C 审查仍待验收，不提交、不 push、不部署。下方较早检查点的两个候选已在本段关闭。
 
-> **本轮局部可靠性修复：2026-10-05，基于 `f8e0964`，未提交。** AI/commerce 共用逐块校验的 16 KiB 请求读取器，超限立即取消、不继续整流缓冲；生产购物 Cookie 强制 Secure。Python 购物车缺库存行不再被内连接隐藏：保留 unavailable 行并拒绝部分结账，避免整车清空。先失败回归后修复；verify 593 passed/16 skipped，Python 105 passed/1 skipped，静态质量、45/45 构建、隔离 Alembic 和真实回环双服务 HTTP 闭环通过。详情及限制见 [更新后的请求边界报告](./docs/ai-request-boundary-2026-10-03.md)。本轮 PG/TLS、远端 CI、浏览器 HTTPS 和正式部署未验收；测试使用全新数据库、已停止服务，业务库与用户已有文件保留。待续：非 UTC 显式 now 的 SQLite expiry 候选、过时 AI smoke 断言、其余阶段 C 全仓审查；不提交、不 push、不部署。
+> **本轮局部可靠性修复：2026-10-05，基于 `f8e0964`，未提交。** AI/commerce 共用逐块校验的 16 KiB 请求读取器，超限立即取消、不继续整流缓冲；生产购物 Cookie 强制 Secure。Python 购物车缺库存行不再被内连接隐藏：保留 unavailable 行并拒绝部分结账，避免整车清空。先失败回归后修复；verify 593 passed/16 skipped，Python 105 passed/1 skipped，静态质量、45/45 构建、隔离 Alembic 和真实回环双服务 HTTP 闭环通过。详情及限制见 [更新后的请求边界报告](../ai-request-boundary-2026-10-03.md)。本轮 PG/TLS、远端 CI、浏览器 HTTPS 和正式部署未验收；测试使用全新数据库、已停止服务，业务库与用户已有文件保留。待续：非 UTC 显式 now 的 SQLite expiry 候选、过时 AI smoke 断言、其余阶段 C 全仓审查；不提交、不 push、不部署。
 
-> **目录停售传播：2026-10-03，F:/shoe-online-store-demo，基于 `54c6fa7`。** 阶段 C 新增商品/变体 `is_active` 与 Alembic 迁移 `c73a28f06b19`；显式 `app.sync_catalog` 默认只读预览，应用必须匹配计划版本，缺失身份停用但不删除，恢复必须显式 `--restore-present`。加购、数量修改和创建订单从 Python 重读可售状态；已有购物车显示停售并允许移除，历史订单、幂等重试、取消和到期释放保持可用。同步不导入价格、不调整库存、不改订单。前端 verify/build、双数据库回归、CLI 与迁移保护证据见 [停售传播报告](./docs/catalog-availability-2026-10-03.md)。新增商品、改名迁移、自动持续同步和正式部署仍按后续独立步骤处理。
+> **目录停售传播：2026-10-03，F:/shoe-online-store-demo，基于 `54c6fa7`。** 阶段 C 新增商品/变体 `is_active` 与 Alembic 迁移 `c73a28f06b19`；显式 `app.sync_catalog` 默认只读预览，应用必须匹配计划版本，缺失身份停用但不删除，恢复必须显式 `--restore-present`。加购、数量修改和创建订单从 Python 重读可售状态；已有购物车显示停售并允许移除，历史订单、幂等重试、取消和到期释放保持可用。同步不导入价格、不调整库存、不改订单。前端 verify/build、双数据库回归、CLI 与迁移保护证据见 [停售传播报告](../catalog-availability-2026-10-03.md)。新增商品、改名迁移、自动持续同步和正式部署仍按后续独立步骤处理。
 
 > **生产配置门禁：2026-10-03。** 新增 `npm run preflight -- -Environment production`，要求显式 `APP_ENV=production`，并在构建/启动前检查 PostgreSQL + TLS 验证、32 字节 AI Session 签名材料、非回环 Python 内部地址和 Shopify 默认关闭；输出不包含连接串、密钥或证书内容。Pester 回归覆盖缺失/错误/正确 `APP_ENV` 及其他不安全组合。该脚本是配置门禁，不证明真实证书、代理、域名或部署已上线。
 
-> **TypeScript 数据库迁移：2026-10-03。** 展示/AI 五张表已从 `src/db/client.ts` 内联 DDL 收敛为 `drizzle/sqlite` 与 `drizzle/postgres` 双方言版本化迁移。运行时仍自动应用空库迁移，初始 SQL 使用 `IF NOT EXISTS` 接管旧 DDL 创建的表并保留数据；`next.config.ts` 已把迁移 SQL 加入生产文件追踪。Python commerce 仍只使用 Alembic。实现与边界见 [ADR 0007](./docs/adr/0007-versioned-typescript-migrations.md) 和 [迁移报告](./docs/typescript-migrations-2026-10-03.md)。
+> **TypeScript 数据库迁移：2026-10-03。** 展示/AI 五张表已从 `src/db/client.ts` 内联 DDL 收敛为 `drizzle/sqlite` 与 `drizzle/postgres` 双方言版本化迁移。运行时仍自动应用空库迁移，初始 SQL 使用 `IF NOT EXISTS` 接管旧 DDL 创建的表并保留数据；`next.config.ts` 已把迁移 SQL 加入生产文件追踪。Python commerce 仍只使用 Alembic。实现与边界见 [ADR 0007](../adr/0007-versioned-typescript-migrations.md) 和 [迁移报告](../typescript-migrations-2026-10-03.md)。
 
 > **PostgreSQL 迁移并发：2026-10-03。** `ensurePgTables()` 改为在同一 `postgres.js` 事务内取得 `pg_advisory_xact_lock`，再读取/执行/登记迁移，避免 Drizzle 默认实现把读取放在事务外造成多实例竞态；失败由事务回滚并允许下一次重试。新增两个独立 `max=1` client 的真实集成测试，CI 会在隔离 `typescript_migrations_test` 数据库中运行；本机未配置 `AI_TEST_POSTGRES_MIGRATIONS_URL`，所以本地仅有 fake-client 证据。
 
-> **AI 请求边界与追踪：2026-10-03。** `/api/ai/chat` 现在在创建 Session 前限制请求体 16 KiB，严格校验 mode/text/product/footMm，拒绝 malformed JSON、未知字段、超长输入和超范围脚长；无效请求返回 422，不调用 chat、不消耗预算。每个响应使用服务端 UUIDv4 `X-Request-ID`，可信代理转发 IP 进入限流前限制为 128 字符，非法或超长值回退到可信直接 peer；没有可用 peer 时使用有界 `untrusted` 桶。AI 拒绝、provider 失败、预算结算和流清理日志使用安全 JSON 字段与耗时，不记录 Session、正文、Cookie、Token 或内部异常。证据见 [AI 请求边界报告](./docs/ai-request-boundary-2026-10-03.md)。
+> **AI 请求边界与追踪：2026-10-03。** `/api/ai/chat` 现在在创建 Session 前限制请求体 16 KiB，严格校验 mode/text/product/footMm，拒绝 malformed JSON、未知字段、超长输入和超范围脚长；无效请求返回 422，不调用 chat、不消耗预算。每个响应使用服务端 UUIDv4 `X-Request-ID`，可信代理转发 IP 进入限流前限制为 128 字符，非法或超长值回退到可信直接 peer；没有可用 peer 时使用有界 `untrusted` 桶。AI 拒绝、provider 失败、预算结算和流清理日志使用安全 JSON 字段与耗时，不记录 Session、正文、Cookie、Token 或内部异常。证据见 [AI 请求边界报告](../ai-request-boundary-2026-10-03.md)。
 
-> **Python 交易库 TLS 边界：2026-10-03。** `backend` 新增 `APP_ENV`；生产进程创建 SQLAlchemy 引擎前必须使用带显式主机名的 PostgreSQL URL 且明确 `sslmode=verify-full`，SQLite、无主机、缺失验证、重复模式、`require` 和 `verify-ca` 均 fail closed。`NODE_ENV=production` 时，`.env` 不能把 `APP_ENV` 降级为 development；开发/测试仍可使用本地 SQLite 或专用 `_test` PostgreSQL。部署必须显式设置 `APP_ENV=production`。证据见 [Python PostgreSQL TLS 边界报告](./docs/python-postgres-tls-2026-10-03.md)。
+> **Python 交易库 TLS 边界：2026-10-03。** `backend` 新增 `APP_ENV`；生产进程创建 SQLAlchemy 引擎前必须使用带显式主机名的 PostgreSQL URL 且明确 `sslmode=verify-full`，SQLite、无主机、缺失验证、重复模式、`require` 和 `verify-ca` 均 fail closed。`NODE_ENV=production` 时，`.env` 不能把 `APP_ENV` 降级为 development；开发/测试仍可使用本地 SQLite 或专用 `_test` PostgreSQL。部署必须显式设置 `APP_ENV=production`。证据见 [Python PostgreSQL TLS 边界报告](../python-postgres-tls-2026-10-03.md)。
 
-> **内部代理认证：2026-10-03。** Next → Python 的服务端代理新增 `COMMERCE_PROXY_SECRET` 与 `X-Internal-Proxy-Secret`；生产要求至少 32 字节，Python `/api/v1/*` 对缺失/错误凭证在数据库操作前拒绝，客户端伪造 Header 不会被转发。开发空密钥保持本地兼容；证据见 [内部代理认证报告](./docs/commerce-proxy-auth-2026-10-03.md)。
+> **内部代理认证：2026-10-03。** Next → Python 的服务端代理新增 `COMMERCE_PROXY_SECRET` 与 `X-Internal-Proxy-Secret`；生产要求至少 32 字节，Python `/api/v1/*` 对缺失/错误凭证在数据库操作前拒绝，客户端伪造 Header 不会被转发。开发空密钥保持本地兼容；证据见 [内部代理认证报告](../commerce-proxy-auth-2026-10-03.md)。
 
-> **AI 配置资源上限：2026-10-03。** `AI_MAX_MESSAGE_CHARS`、`AI_MAX_OUTPUT_TOKENS`、`AI_MAX_TURNS`、`AI_REQUEST_TIMEOUT_MS` 和 `AI_DAILY_TOKEN_CAP` 现在通过 `envIntMax` 应用硬上限；超大环境值会被截断，空值/非法值仍回退默认，不改变原子预算、Session 或多实例范围。证据见 [AI 配置边界报告](./docs/ai-config-boundaries-2026-10-03.md)。
+> **AI 配置资源上限：2026-10-03。** `AI_MAX_MESSAGE_CHARS`、`AI_MAX_OUTPUT_TOKENS`、`AI_MAX_TURNS`、`AI_REQUEST_TIMEOUT_MS` 和 `AI_DAILY_TOKEN_CAP` 现在通过 `envIntMax` 应用硬上限；超大环境值会被截断，空值/非法值仍回退默认，不改变原子预算、Session 或多实例范围。证据见 [AI 配置边界报告](../ai-config-boundaries-2026-10-03.md)。
 
 > **远端 CI 提交链核对：2026-10-02。** GitHub Actions 最新远端 SHA `cf40bc2`（其父提交 `14f0f75`）仍基于 `dd76ad8`，两个 Node 矩阵均在 TypeScript 阶段找不到 `@/components/shop/commerce-panel`；后续本地 `4177ec5` 已补齐组件，当前 HEAD 的 `npm run verify` 与 `npm run build` 已通过。此次本地合并保留远端 cleanup 删除的构建产物和数据库文件，不 push、不部署。远端失败不是 Node 22/24 测试行为差异，而是 CI checkout 的提交没有包含后续源码提交。
 
-> **AI 用量精度与 embedding 预算更新：2026-10-02。** 真实 OpenAI-compatible 流默认请求最终 usage chunk，并在结算前校验非负安全整数；缺失/非法 usage 或 `AI_INCLUDE_USAGE=0` 时回退字符估算，不自动重试。检索的能力探测、查询和商品批量 embedding 现在各自通过原子预算 reservation，成功按输入字符估算结算；普通网络/网关失败保守记账后降级关键词，预算拒绝会阻断 provider 调用。新增回归覆盖精确写入、估算回退和 embedding reservation，详见 [AI 用量精度报告](./docs/ai-usage-accuracy-2026-10-02.md) 与 [embedding 预算边界报告](./docs/ai-embedding-budget-2026-10-02.md)。多实例共享护栏和正式网关兼容性仍需独立验收。
+> **AI 用量精度与 embedding 预算更新：2026-10-02。** 真实 OpenAI-compatible 流默认请求最终 usage chunk，并在结算前校验非负安全整数；缺失/非法 usage 或 `AI_INCLUDE_USAGE=0` 时回退字符估算，不自动重试。检索的能力探测、查询和商品批量 embedding 现在各自通过原子预算 reservation，成功按输入字符估算结算；普通网络/网关失败保守记账后降级关键词，预算拒绝会阻断 provider 调用。新增回归覆盖精确写入、估算回退和 embedding reservation，详见 [AI 用量精度报告](../ai-usage-accuracy-2026-10-02.md) 与 [embedding 预算边界报告](../ai-embedding-budget-2026-10-02.md)。多实例共享护栏和正式网关兼容性仍需独立验收。
 
-> **目录漂移与 CI 更新：2026-10-02。** 新增只读 `npm run check:catalog`，比较 TypeScript 展示快照与 Python commerce 导入快照的稳定商品/变体键、价格、颜色、尺码和无尺码款；本次 29 款、968 个变体键一致，规范化展示/交易快照版本均为 `109c32e3464f7e96`，`evo-05` 明确无可售尺码。检查不读取或修改运行时库存、预占和订单。PostgreSQL TLS CI 在写入测试证书后完整重启服务，并验证证书路径和 `ssl=on`，不再只依赖 reload。证据见 [目录漂移报告](./docs/catalog-drift-2026-10-02.md)。
+> **目录漂移与 CI 更新：2026-10-02。** 新增只读 `npm run check:catalog`，比较 TypeScript 展示快照与 Python commerce 导入快照的稳定商品/变体键、价格、颜色、尺码和无尺码款；本次 29 款、968 个变体键一致，规范化展示/交易快照版本均为 `109c32e3464f7e96`，`evo-05` 明确无可售尺码。检查不读取或修改运行时库存、预占和订单。PostgreSQL TLS CI 在写入测试证书后完整重启服务，并验证证书路径和 `ssl=on`，不再只依赖 reload。证据见 [目录漂移报告](../catalog-drift-2026-10-02.md)。
 
-> **耦合检查：2026-10-01。** 按用户要求复核静态依赖与模块边界，并将护栏对整个 SQLite 仓储的类型依赖改为纯预算接口。`check:coupling` 已纳入 verify，检查循环、领域层和护栏具体实现依赖；详见 [耦合检查报告](./docs/coupling-audit-2026-10-01.md)。ORM/双数据库重复和展示/交易目录同步仍按原边界记录，不以新增接口宣称这些问题已完成。
+> **耦合检查：2026-10-01。** 按用户要求复核静态依赖与模块边界，并将护栏对整个 SQLite 仓储的类型依赖改为纯预算接口。`check:coupling` 已纳入 verify，检查循环、领域层和护栏具体实现依赖；详见 [耦合检查报告](../coupling-audit-2026-10-01.md)。ORM/双数据库重复和展示/交易目录同步仍按原边界记录，不以新增接口宣称这些问题已完成。
 
-> **预算恢复更新：2026-10-01。** 阶段 C 继续修复 AI 调用失败/中断漏计、进程崩溃预占无恢复，以及流式请求取消和隐式重试。已调用 provider 的不确定工作保守记为 `abandoned`，陈旧 pending 分批恢复，完整回复超出估算仍记账；SSE 按需拉取并传递取消/超时，SDK 自动重试关闭。详见 [预算恢复报告](./docs/ai-budget-recovery-2026-10-01.md)。不改变支付、交易权威来源或前台设计，阶段 C 仍有精确用量和部署共享状态等缺口。
+> **预算恢复更新：2026-10-01。** 阶段 C 继续修复 AI 调用失败/中断漏计、进程崩溃预占无恢复，以及流式请求取消和隐式重试。已调用 provider 的不确定工作保守记为 `abandoned`，陈旧 pending 分批恢复，完整回复超出估算仍记账；SSE 按需拉取并传递取消/超时，SDK 自动重试关闭。详见 [预算恢复报告](../ai-budget-recovery-2026-10-01.md)。不改变支付、交易权威来源或前台设计，阶段 C 仍有精确用量和部署共享状态等缺口。
 
-> **PostgreSQL 实测更新：2026-10-01。** 在独立本地 PostgreSQL 16.4 上已通过 commerce 双数据库测试（112 项）及 AI 预算并发、真实 TLS 查询/拒绝验收。同请求结算/释放的竞态已修复，重试不能改变预占日期或金额；相应测试已接入 CI 配置，远端 CI 尚未执行。证据与下一步见 [PostgreSQL 验收报告](./docs/postgres-acceptance-2026-10-01.md)。下方“PostgreSQL 未执行”仅为对应历史轮次状态。
+> **PostgreSQL 实测更新：2026-10-01。** 在独立本地 PostgreSQL 16.4 上已通过 commerce 双数据库测试（112 项）及 AI 预算并发、真实 TLS 查询/拒绝验收。同请求结算/释放的竞态已修复，重试不能改变预占日期或金额；相应测试已接入 CI 配置，远端 CI 尚未执行。证据与下一步见 [PostgreSQL 验收报告](../postgres-acceptance-2026-10-01.md)。下方“PostgreSQL 未执行”仅为对应历史轮次状态。
 
-> **继续实施：2026-10-01。** 用户已授权自行提交。上一轮统一基线已提交为 `4177ec5`；本轮继续补齐安全错误合同、请求追踪，以及隔离 PostgreSQL 测试/CI 入口。当前事实、实际结果和待验收范围见 [可靠性更新报告](./docs/reliability-2026-10-01.md)。下方 2026-09-30 的“未提交”是历史状态；本轮不 push、不部署。
+> **继续实施：2026-10-01。** 用户已授权自行提交。上一轮统一基线已提交为 `4177ec5`；本轮继续补齐安全错误合同、请求追踪，以及隔离 PostgreSQL 测试/CI 入口。当前事实、实际结果和待验收范围见 [可靠性更新报告](../reliability-2026-10-01.md)。下方 2026-09-30 的“未提交”是历史状态；本轮不 push、不部署。
 
 > **实施更新：2026-09-30，F:/shoe-online-store-demo。** 用户本次要求继续推进更新后，已在原分支 `sql-certificate-and-AI-stock` / HEAD `dd76ad8` 上形成未提交的统一工作树。当前目录已经恢复 Python commerce 源码、代理、购物车/订单 UI 与响应合同；原有文档、SEO 页面和业务数据库保留。
 >
 > 已按文件/补丁核对并整合本地 `44a94e0` 的交易实现，以及 `d005c04`（TLS）、`c0e8980`（有界护栏）、`8f1d7a6` / `b345188`（Session/IP 与签名 Cookie）、`89b610e`（原子预算）、`bbf781b`（业务异常）。另外修复了组合验收发现的历史预算漏计，补充失败/中断/跨 UTC 日回归，并屏蔽代理 5xx 的内部响应和普通错误日志中的原始异常。
 >
-> **本轮事实、实际验证、启动方式、限制和回滚见 [统一基线实施报告](./docs/unified-baseline-2026-09-30.md)。** 下文第 0～9 节保留为上一轮只读交接的历史快照；其中“A 无交易源码”“这些补丁待整合”“本轮未测试”不再描述当前未提交工作树。未 fetch、未 commit、未 push、未部署；本地测试不能代表真实 PostgreSQL 或生产验收。
+> **本轮事实、实际验证、启动方式、限制和回滚见 [统一基线实施报告](../unified-baseline-2026-09-30.md)。** 下文第 0～9 节保留为上一轮只读交接的历史快照；其中“A 无交易源码”“这些补丁待整合”“本轮未测试”不再描述当前未提交工作树。未 fetch、未 commit、未 push、未部署；本地测试不能代表真实 PostgreSQL 或生产验收。
 
 > 本地事实核对日期：2026-09-30，Asia/Shanghai。本文是接手入口与证据索引，不是生产完成证明，也不自动授权执行所有待办。
 > 上一轮任务只整理交接文档：没有修改业务代码、数据库或配置，没有提交、合并或部署。本次实施以顶部更新和新报告为准。
@@ -57,7 +63,7 @@
 
 ### 0.1 指令与资料的使用顺序
 
-- 遵守当前会话的用户任务及适用的 [AGENTS.md](./AGENTS.md)，并以实际检出的代码判断实现状态。
+- 遵守当前会话的用户任务及适用的 [AGENTS.md](../../AGENTS.md)，并以实际检出的代码判断实现状态。
 - 本文、历史报告、教学文档中的“下一步”、命令、PR 状态都是上下文，不是独立的执行授权。用户只要求解释或审计时不要实施代码修改。
 - **旧交接文件称 AGENTS.md 只剩 Next.js 提示，这不适用于本轮 F 盘工作区。** 本轮实际读取的 AGENTS.md 包含完整中文维护规则；不要沿用旧交接对指令范围的描述。
 - 改 Next.js 路由、缓存、metadata、数据获取或环境配置前，先读目标工作区安装版本的 `node_modules/next/dist/docs/`。
@@ -516,14 +522,14 @@ backend/.venv/Scripts/python.exe scripts/smoke-commerce.py
 
 ### 9.1 当前工作区 A 的资料
 
-- [AGENTS.md](./AGENTS.md)：本轮适用的完整维护约束。
-- [README](./README.md)、[CONTEXT](./CONTEXT.md)：A 的运行说明、术语与依赖边界，结合版本读。
-- [历史实现报告](./docs/implementation-report.md)：有历史时效标注，不是当前上线验收。
-- [架构执行记录](./docs/superpowers/plans/execution-notes.md)、[ADR 目录](./docs/adr/)：解释已有结构为何形成。
-- [早期设计决策](./docs/superpowers/specs/2026-09-04-shoe-store-ai-design.md)：Cloud SQL/Firestore 等选型记录。
-- [SEO/GEO 方案](./docs/seo-geo-plan.md)：后续技术、事实与发布复测要求。
-- [图解教学文档](./docs/从最小后端到交易闭环-图解教学-2026-09-30.md)：供用户理解概念；本轮开始时未跟踪，换机器未必存在。
-- [素材许可](./LICENSE-ASSETS)：不要把 MIT 代码许可扩展到全部商品素材。
+- [AGENTS.md](../../AGENTS.md)：本轮适用的完整维护约束。
+- [README](../../README.md)、[CONTEXT](../../CONTEXT.md)：A 的运行说明、术语与依赖边界，结合版本读。
+- [历史实现报告](../implementation-report.md)：有历史时效标注，不是当前上线验收。
+- [架构执行记录](../superpowers/plans/execution-notes.md)、[ADR 目录](../adr/)：解释已有结构为何形成。
+- [早期设计决策](../superpowers/specs/2026-09-04-shoe-store-ai-design.md)：Cloud SQL/Firestore 等选型记录。
+- [SEO/GEO 方案](../seo-geo-plan.md)：后续技术、事实与发布复测要求。
+- [图解教学文档](../从最小后端到交易闭环-图解教学-2026-09-30.md)：供用户理解概念；本轮开始时未跟踪，换机器未必存在。
+- [素材许可](../../LICENSE-ASSETS)：不要把 MIT 代码许可扩展到全部商品素材。
 
 ### 9.2 交易工作区 B 的证据
 

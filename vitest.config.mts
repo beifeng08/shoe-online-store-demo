@@ -16,6 +16,6 @@ export default defineConfig({
       // 决策 #17：默认目录源是 DB，单元测试保持纯内存 seed 语义（不落盘）。
       CATALOG_SOURCE: 'seed',
     },
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
   },
 })
