@@ -8,7 +8,7 @@ import {
 } from '@/db/schema-postgres'
 import { ensurePgTables } from '@/db/client'
 import type { PgAppDb } from '@/db/client'
-import { type ProductRecord, withoutId } from '@/db/product-row'
+import type { ProductRecord } from '@/db/product-row'
 import { parseVector } from './vector'
 import type { EmbeddingRow } from './embedding-row'
 import type {
@@ -306,14 +306,24 @@ export function createPostgresRepository(db: PgAppDb) {
       const [row] = await db.select().from(products).where(eq(products.handle, handle)).limit(1)
       return row ?? null
     },
-    async upsertProducts(records: ProductRecord[]): Promise<void> {
+    async insertMissingProducts(records: ProductRecord[]): Promise<number> {
+      if (records.length === 0) return 0
       await ensurePgTables(db)
-      for (const r of records) {
-        await db
-          .insert(products)
-          .values(r)
-          .onConflictDoUpdate({ target: products.id, set: withoutId(r) })
-      }
+      return db.transaction(async (tx) => {
+        let inserted = 0
+        // Use a total string order: locale collation can equate distinct Unicode IDs.
+        for (const record of [...records].sort((a, b) =>
+          a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
+        )) {
+          const rows = await tx
+            .insert(products)
+            .values(record)
+            .onConflictDoNothing({ target: products.id })
+            .returning({ id: products.id })
+          inserted += rows.length
+        }
+        return inserted
+      })
     },
   }
 }

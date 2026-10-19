@@ -14,6 +14,7 @@
     "check:boundary": "node scripts/check-server-boundary.mjs",
     "check:coupling": "node scripts/check-coupling.mjs",
     "check:catalog": "node scripts/check-catalog-drift.mjs",
+    "catalog:initialize": "node scripts/initialize-display-catalog.mjs",
     "contract:generate": "node scripts/commerce-contract.mjs",
     "contract:check": "node scripts/commerce-contract.mjs --check",
     "contract:test": "node --test scripts/commerce-contract.test.mjs",

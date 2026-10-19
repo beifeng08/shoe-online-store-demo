@@ -2,7 +2,16 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import type { Socket } from 'node:net'
 import type { NextResponse } from 'next/server'
-import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type MockInstance,
+} from 'vitest'
 import type { AppDb } from '@/db/client'
 import type { ChatEvent } from '@/domain/chat-events'
 import type { Product } from '@/domain/product'
@@ -303,6 +312,30 @@ async function startLoopback(
   }
 }
 
+const loadDatabaseModules = () =>
+  Promise.all([
+    import('@/db/client'),
+    import('./repository'),
+    import('@/db/schema'),
+    import('@/server/guardrails/text'),
+  ])
+
+const loadRouteModules = () =>
+  Promise.all([
+    import('@/app/api/ai/chat/route'),
+    import('next/server'),
+    import('@/domain/chat-events'),
+    import('@/server/catalog/seed-adapter'),
+    import('@/domain/search-text'),
+    import('./retrieval'),
+    import('./keyword'),
+  ])
+
+// 首次转换模块图的耗时随机器负载波动，不是 finite 要约束的生产行为；每个用例 resetModules 后仍在 finite 内重新求值。
+beforeAll(async () => {
+  await Promise.all([loadDatabaseModules(), loadRouteModules()])
+})
+
 beforeEach(() => {
   vi.useRealTimers()
   vi.restoreAllMocks()
@@ -364,12 +397,7 @@ afterEach(() => {
 
 async function withLoopback(scenario: Scenario, run: (context: LoopbackContext) => Promise<void>) {
   const [{ createDb }, { createRepository }, tables, text] = await finite(
-    Promise.all([
-      import('@/db/client'),
-      import('./repository'),
-      import('@/db/schema'),
-      import('@/server/guardrails/text'),
-    ]),
+    loadDatabaseModules(),
     '动态加载真实数据库与预算模块',
   )
   const database = createDb(':memory:') as AppDb & { $client: { close(): void } }
@@ -408,18 +436,7 @@ async function withLoopback(scenario: Scenario, run: (context: LoopbackContext) 
       { searchableText },
       { hashText },
       keyword,
-    ] = await finite(
-      Promise.all([
-        import('@/app/api/ai/chat/route'),
-        import('next/server'),
-        import('@/domain/chat-events'),
-        import('@/server/catalog/seed-adapter'),
-        import('@/domain/search-text'),
-        import('./retrieval'),
-        import('./keyword'),
-      ]),
-      '动态加载真实 POST 与检索模块',
-    )
+    ] = await finite(loadRouteModules(), '动态加载真实 POST 与检索模块')
     const products = await finite(seedAdapter.getProducts({}), '读取内存 seed 目录')
     expect(products.length).toBeGreaterThan(10)
     const productTexts = products.map(searchableText)

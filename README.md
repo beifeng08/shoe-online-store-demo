@@ -48,7 +48,9 @@ stock; the TypeScript display/search catalog is a separate data source.
 
 ```bash
 npm ci
-cp .env.example .env.local      # defaults are fine — empty AI_API_KEY = Mock mode
+cp .env.example .env.local      # only if .env.local does not already exist
+# Review DATABASE_URL: it must select the TypeScript display DB, not commerce.
+node --env-file=.env.local scripts/initialize-display-catalog.mjs
 npm run dev               # http://localhost:3000
 ```
 
@@ -60,7 +62,8 @@ npm run dev               # http://localhost:3000
 The TypeScript display/AI database has five tables: `products`, `product_embeddings`,
 `ai_usage`, `ai_budget_days` and `ai_budget_reservations`. Versioned Drizzle migrations
 under `drizzle/sqlite` and `drizzle/postgres` initialize them on either driver; the
-runtime still applies the migration automatically so local startup remains zero-setup.
+runtime still applies schema migrations automatically. Product data is separate: run the
+explicit display-catalog initializer before the first `dev` or `build`.
 The baseline is idempotent for databases created by the former inline DDL and records
 applied versions in Drizzle's metadata table. The first daily reservation accounts for
 usage already in the legacy ledger. Python commerce uses a **separate database and
@@ -109,10 +112,40 @@ For isolated alternate ports, the HTTP check accepts
 `npm run smoke:commerce -- --base-url http://127.0.0.1:3100`.
 It creates and cancels demo orders; run only against a disposable/demo database.
 
-**Catalog lives in the `products` table.** The catalog adapter defaults to reading the table;
-when it is empty the first request auto-seeds it from the import layer (supplier JSON +
-curation). `CATALOG_SOURCE=seed` switches back to the pure in-memory import layer (used by unit
-tests); the reserved Shopify adapter takes priority only with `SHOPIFY_ENABLED=true` and both catalog credentials.
+**Catalog lives in the `products` table.** The catalog adapter only reads product rows:
+an empty table stays empty and an unknown handle returns no product. Requests never seed,
+repair or restore deleted products. Schema migration and AI budget/embedding writes remain
+separate responsibilities; this is not a globally read-only database connection.
+
+From the repository root, explicitly select the **TypeScript display database**, then run
+`npm run catalog:initialize` with `DATABASE_URL` already set in the process environment.
+The command does not implicitly load `.env*` or use a default destination. For a reviewed
+local environment file, use the `node --env-file=.env.local` command in Quick start.
+Existing process variables take precedence over that file; check the effective target first.
+The initializer rejects surrounding whitespace in `DATABASE_URL` or a resolved SQLite path
+rather than silently normalizing its destination. For PostgreSQL, use a `postgres://` or `postgresql://` URL with
+one explicit hostname and a non-empty database path, without a `database` query parameter
+that could override that path. Percent-encode reserved characters in credentials; URLs
+with multiple unescaped `@` characters are ambiguous and rejected. Multi-host URLs and
+implicit host/database defaults are rejected before loading the database driver.
+For file-backed SQLite, this command serializes its entire open/migrate/insert/close lifecycle
+using an exclusive SQLite lock in `<real-database-path>.initialize-lock`. Keep this empty
+sidecar file: the operating system releases the lock when the connection/process closes,
+and deleting a live sidecar could split the lock. Contention uses the driver's bounded wait
+and fails with a nonzero exit if the lock remains held. This coordinates this command only;
+it does not lock other application or administration entry points. Hard-linked aliases are
+not coordinated; use one canonical database path for administration. Existing symbolic-link
+aliases resolve to that path; dangling leaf links fail before opening a sidecar or target.
+The initializer checks catalog drift before opening its target, inserts only missing IDs in
+one transaction, reports the actual inserted count, and is safe to invoke again (normally 0).
+It preserves every column of existing products, including edits and custom rows. A conflicting
+handle under a different ID fails and rolls back the batch; it is not silently overwritten.
+It never initializes Python commerce, price, inventory, orders or payments. Never point it
+at a commerce database. For an existing environment, use the normal backup/change-review
+process before explicitly restoring missing display IDs. Stop on a nonzero exit.
+
+`CATALOG_SOURCE=seed` selects the pure in-memory import layer for tests; the reserved Shopify
+adapter takes priority only with `SHOPIFY_ENABLED=true` and both catalog credentials.
 
 ### What you can do without any setup
 
@@ -134,6 +167,7 @@ tests); the reserved Shopify adapter takes priority only with `SHOPIFY_ENABLED=t
 | `npm run check:boundary` | Guards that `'use client'` modules carry no runtime `@/server/**` import. |
 | `npm run check:coupling` | Checks runtime import cycles, transitive client/domain boundaries and guardrails' budget port. |
 | `npm run check:catalog` | Read-only comparison of display/commerce snapshots and stable variant keys; set `CATALOG_DRIFT_DATABASE` for an optional local runtime DB check. |
+| `npm run catalog:initialize` | Explicit display DB initialization after drift validation; requires process `DATABASE_URL`, inserts only missing IDs and never overwrites existing product rows. |
 | `npm run check:slop` | Zero-dependency mechanical slop scan: unreachable files/exports/statements and stray-focus tests fail the gate; commented-out code, markers and conditional skips are reported for human judgement. Covers only what is mechanically decidable. |
 | `npm run check:slop:python` | Same scan for `backend/`, via the resolved Python interpreter; run `--self-test` to exercise its built-in false-positive regressions. |
 | `npm run lint` | ESLint over the repo |
@@ -158,7 +192,9 @@ Set `AI_TEST_POSTGRES_URL` only in a test process, pointing to a dedicated loopb
 database whose name ends in `_test`. Run
 `npm test -- src/server/search/repository-postgres.integration.test.ts`. The suite owns
 and removes one random schema, warms independent connections and verifies competing
-reservations, duplicate retries and rollback. Without the variable it is explicitly skipped.
+reservations, duplicate retries and rollback. Product cases also cover insert-only counts,
+retained edits, conflicting-handle rollback, competing insert batches and read-only catalog
+access. Without the variable the suite is explicitly skipped.
 
 For TypeScript schema migration startup locking, set
 `AI_TEST_POSTGRES_MIGRATIONS_URL` to a separate disposable loopback database whose name
@@ -196,7 +232,7 @@ See [`.env.example`](.env.example) for the annotated template. Summary:
 | `TRUSTED_PROXY_IPS` | *(empty)* | Exact trusted immediate peer IPs; XFF is ignored without a verified peer |
 | `AI_DISABLE_REAL` | `0` | `1` forces Mock mode even with a key (abuse kill switch) |
 | `DB_DRIVER` | `sqlite` | `sqlite` (default) or `postgres` — selects the app DB driver |
-| `CATALOG_SOURCE` | `db` | Runtime catalog source: `db` = `products` table (default, auto-seeded when empty); `seed` = in-memory import layer (tests); explicitly enabled Shopify configuration takes priority |
+| `CATALOG_SOURCE` | `db` | Runtime catalog source: `db` = `products` table (default; empty until explicitly initialized, no product writes on reads); `seed` = in-memory import layer (tests); explicitly enabled Shopify configuration takes priority |
 | `DATABASE_URL` | `./data/local.db` | sqlite: local file; postgres: `postgres://…` connection string |
 | `PG_SSL` | *(verified TLS in production)* | `1`/`verify-full` verifies certificates; plaintext `0` is development-only |
 | `PG_SSL_CA_FILE` | *(system roots)* | Optional readable PEM CA bundle, never committed |
@@ -285,10 +321,10 @@ src/
 
 ## Architecture notes
 
-- **Catalog**: runtime source is the `products` DB table — auto-seeded from the import layer
-  (29 supplier styles across 4 collections, curation in `seed.ts` over `data/supplier.json`)
-  when empty; `/shop`, PDP and search all read the table, so edits (title, price, collection…)
-  apply on the next dynamic request. `CATALOG_SOURCE=seed` keeps the pure in-memory layer for
+- **Catalog**: runtime source is the `products` DB table, explicitly initialized with
+  insert-only missing IDs from the import layer (29 supplier styles across 4 collections,
+  curation in `seed.ts` over `data/supplier.json`). `/shop`, PDP and search never seed product
+  rows, so persisted edits (title, price, collection…) apply on the next dynamic request. `CATALOG_SOURCE=seed` keeps the pure in-memory layer for
   tests. Product cards and PDP galleries use real photos (`Product.images`, WebP under
   `public/products/<handle>/`) and fall back to SVG visuals only when image-less. A separate
   `gifts.ts` module feeds the `/shop` free-gift gallery (gifts are display-only, never in the

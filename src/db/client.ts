@@ -21,12 +21,19 @@ type AnyDb = AppDb | PgAppDb
 const sqliteMigrations = { migrationsFolder: resolve(process.cwd(), 'drizzle/sqlite') }
 const postgresMigrations = { migrationsFolder: resolve(process.cwd(), 'drizzle/postgres') }
 
-export function createDb(file: string = process.env.DATABASE_URL ?? './data/local.db'): AppDb {
+export function createDb(
+  file: string = process.env.DATABASE_URL ?? './data/local.db',
+): AppDb & { $client: Database.Database } {
   const sqlite = new Database(file)
-  sqlite.exec('PRAGMA journal_mode = WAL;')
-  const database = drizzle(sqlite, { schema })
-  migrateSqlite(database, sqliteMigrations)
-  return database
+  try {
+    sqlite.exec('PRAGMA journal_mode = WAL;')
+    const database = drizzle(sqlite, { schema })
+    migrateSqlite(database, sqliteMigrations)
+    return database
+  } catch (error) {
+    sqlite.close()
+    throw error
+  }
 }
 
 let _db: AppDb | null = null

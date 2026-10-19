@@ -87,7 +87,7 @@ marketing 标题/副标题、描述、`price`、`sizes: CanonicalSize[]`、颜�
 #### 不变量
 
 - 运行时选择是**惰性**的：`adapter.ts` 的 `catalog()` 首次调用才读 `CATALOG_SOURCE` 并缓存实例
-  （必须缓存：`DbCatalogAdapter` 内部持有「已灌种」promise）。
+  （缓存同一个适配器及其懒连接；读取从不写产品，初始化只走显式的 `npm run catalog:initialize`）。
 - 筛选/排序语义**只有一处**：`catalog/filter.ts` 的 `filterProducts`，被 seed 与 db 两个适配器共用。
 - `getBuyUrl` 目前在所有实现中恒为 `null`：真实的购买通道是独立的 Shopify Buy Button
   （`shopify-buy.ts`），**不经过本接口**。`SHOPIFY_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN` 一旦同配

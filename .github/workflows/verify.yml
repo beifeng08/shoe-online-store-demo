@@ -36,7 +36,14 @@ jobs:
 
       - run: npm run verify
 
+      # Reads never seed; initialize the build DB explicitly so product pages are still prerendered.
+      - run: npm run catalog:initialize
+        env:
+          DATABASE_URL: ./data/local.db
+
       - run: npm run build
+        env:
+          DATABASE_URL: ./data/local.db
 
   python:
     runs-on: ubuntu-latest

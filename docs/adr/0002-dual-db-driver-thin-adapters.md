@@ -19,6 +19,8 @@
    `withoutId(r)`，两处 `listAllProducts` 直接返回 drizzle 行（查询结果的形状**恰好**等于
    `ProductRecord`，18 列名与类型全对，六处映射其实都是恒等投影），`upsertProducts` 传 `.values(r)`
    与 `.onConflictDoUpdate({ target, set: withoutId(r) })`。**已执行。**
+   2026-10-19（R3）：目录读取不再灌种后 `upsertProducts` 没有生产调用方，与 `withoutId` 一并删除；
+   产品写入只剩显式初始化的 `insertMissingProducts`（`onConflictDoNothing`），两份实现仍各自保留。
 2. **两份 repository 本体保留**，不做合并。**本条 ADR 记录的即为此决策。**
 
 理由：drizzle 的 sqlite 与 postgres 驱动是**两套不同的 builder 类型**，`onConflictDoUpdate`、
@@ -26,7 +28,7 @@
 做方言分支（把「哪个方言」这个已由 `DB_DRIVER` 决定的事实再判断一次），要么靠类型断言抹平差异。
 两者都比两份 90 行的直白实现更糟：**合并消除的是文本重复，引入的是类型层面的不诚实。**
 
-`repository-postgres.test.ts` 与 `products-repo.test.ts` 复用同一批行为断言，这本身就是
+`repository-postgres.integration.test.ts` 与 `products-repo.test.ts` 复用同一批行为断言，这本身就是
 「两份实现必须同形」的可执行契约，比合并更能防止它们漂移。
 
 ## 后果

@@ -5,12 +5,15 @@ import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { eq, sql } from 'drizzle-orm'
 import { ensurePgTables, type PgAppDb } from '@/db/client'
-import { schema, aiBudgetDays, aiBudgetReservations, aiUsage } from '@/db/schema-postgres'
+import { schema, products, aiBudgetDays, aiBudgetReservations, aiUsage } from '@/db/schema-postgres'
+import { productToRecord } from '@/db/product-row'
+import { DbCatalogAdapter } from '@/server/catalog/db-adapter'
+import { seedProducts } from '@/server/catalog/seed'
 import { createPostgresRepository } from './repository-postgres'
 
 const testUrl = process.env.AI_TEST_POSTGRES_URL
 
-describe.runIf(Boolean(testUrl))('PostgreSQL atomic budget integration', () => {
+describe.runIf(Boolean(testUrl))('PostgreSQL product and atomic budget integration', () => {
   const ownedSchema = `ai_budget_test_${randomUUID().replaceAll('-', '')}`
   let admin: ReturnType<typeof postgres> | undefined
   let client: ReturnType<typeof postgres> | undefined
@@ -51,6 +54,7 @@ describe.runIf(Boolean(testUrl))('PostgreSQL atomic budget integration', () => {
     await db.delete(aiBudgetReservations)
     await db.delete(aiBudgetDays)
     await db.delete(aiUsage)
+    await db.delete(products)
   })
 
   afterAll(async () => {
@@ -59,6 +63,85 @@ describe.runIf(Boolean(testUrl))('PostgreSQL atomic budget integration', () => {
       if (created && admin) await admin`DROP SCHEMA ${admin(ownedSchema)} CASCADE`
     } finally {
       await admin?.end({ timeout: 5 })
+    }
+  })
+
+  it('inserts only missing product IDs and preserves existing edits', async () => {
+    const rows = seedProducts.slice(0, 2).map(productToRecord)
+    expect(await repo.insertMissingProducts([])).toBe(0)
+    expect(await repo.insertMissingProducts(rows)).toBe(2)
+    const edited = { ...rows[0], title: 'PostgreSQL retained edit', priceAmount: 13 }
+    await db
+      .update(products)
+      .set({ title: edited.title, priceAmount: edited.priceAmount })
+      .where(eq(products.id, edited.id))
+    expect(await repo.insertMissingProducts([rows[0], rows[1], rows[0]])).toBe(0)
+    expect(await repo.findProductByHandle(edited.handle)).toEqual(edited)
+  })
+
+  it('rolls back the entire product batch on a conflicting handle', async () => {
+    const rows = seedProducts.slice(0, 3).map(productToRecord)
+    await repo.insertMissingProducts([rows[1]])
+    const before = await repo.listAllProducts()
+    await expect(
+      repo.insertMissingProducts([rows[0], { ...rows[2], handle: rows[1].handle }]),
+    ).rejects.toThrow()
+    expect(await repo.listAllProducts()).toEqual(before)
+  })
+
+  it('counts concurrent reversed product batches once without overwriting edits', async () => {
+    const rows = seedProducts.map(productToRecord)
+    const edited = { ...rows[0], title: 'Concurrent PostgreSQL edit', priceAmount: 17 }
+    await repo.insertMissingProducts([edited])
+    const counts = await Promise.all([
+      repo.insertMissingProducts(rows),
+      repo.insertMissingProducts([...rows].reverse()),
+    ])
+    expect(counts.reduce((sum, count) => sum + count, 0)).toBe(rows.length - 1)
+    expect(await repo.countProducts()).toBe(rows.length)
+    expect(await repo.findProductByHandle(edited.handle)).toEqual(edited)
+  })
+
+  it('counts reversed batches with distinct Unicode IDs using one lock order', async () => {
+    const rows = [
+      { ...productToRecord(seedProducts[0]), id: '\u00e9' },
+      { ...productToRecord(seedProducts[1]), id: 'e\u0301' },
+    ]
+    const counts = await Promise.all([
+      repo.insertMissingProducts(rows),
+      repo.insertMissingProducts([...rows].reverse()),
+    ])
+    expect(counts.reduce((sum, count) => sum + count, 0)).toBe(2)
+    expect(await repo.countProducts()).toBe(2)
+    expect(await repo.findProductByHandle(rows[0].handle)).toEqual(rows[0])
+    expect(await repo.findProductByHandle(rows[1].handle)).toEqual(rows[1])
+  })
+
+  it('reads empty and edited products on a read-only PostgreSQL connection', async () => {
+    const readClient = postgres(testUrl!, {
+      max: 1,
+      ssl: false,
+      connect_timeout: 10,
+      onnotice: () => {},
+      connection: { search_path: ownedSchema, statement_timeout: 15000, lock_timeout: 10000 },
+    })
+    try {
+      const readDb = drizzle(readClient, { schema })
+      // Schema migration is explicitly completed before applying the read-only boundary.
+      await ensurePgTables(readDb)
+      await readClient`SET default_transaction_read_only = on`
+      const adapter = new DbCatalogAdapter(() => createPostgresRepository(readDb))
+      expect(await adapter.getProducts()).toEqual([])
+      expect(await adapter.getProductByHandle(seedProducts[0].handle)).toBeNull()
+      const edited = { ...productToRecord(seedProducts[1]), title: 'Read-only PostgreSQL edit' }
+      await repo.insertMissingProducts([edited])
+      const before = await repo.listAllProducts()
+      expect(await adapter.getProducts()).toHaveLength(1)
+      expect((await adapter.getProductByHandle(edited.handle))?.title).toBe(edited.title)
+      expect(await adapter.getProductByHandle(seedProducts[0].handle)).toBeNull()
+      expect(await repo.listAllProducts()).toEqual(before)
+    } finally {
+      await readClient.end({ timeout: 5 })
     }
   })
 

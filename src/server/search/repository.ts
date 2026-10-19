@@ -9,7 +9,7 @@ import {
 import { db } from '@/db/client'
 import type { AppDb, PgAppDb } from '@/db/client'
 import { resolveDbDriver } from '@/db/dialect'
-import { type ProductRecord, withoutId } from '@/db/product-row'
+import type { ProductRecord } from '@/db/product-row'
 import { parseVector } from './vector'
 import { createPostgresRepository } from './repository-postgres'
 import type { EmbeddingRow } from './embedding-row'
@@ -302,13 +302,20 @@ export function createRepository(db: AppDb) {
       const [row] = await db.select().from(products).where(eq(products.handle, handle)).limit(1)
       return row ?? null
     },
-    async upsertProducts(records: ProductRecord[]): Promise<void> {
-      for (const r of records) {
-        await db
-          .insert(products)
-          .values(r)
-          .onConflictDoUpdate({ target: products.id, set: withoutId(r) })
-      }
+    // Atomic add-only initialization: ignore ID conflicts, never overwrite edits.
+    async insertMissingProducts(records: ProductRecord[]): Promise<number> {
+      if (records.length === 0) return 0
+      return db.transaction((tx) => {
+        let inserted = 0
+        for (const record of records) {
+          inserted += tx
+            .insert(products)
+            .values(record)
+            .onConflictDoNothing({ target: products.id })
+            .run().changes
+        }
+        return inserted
+      })
     },
   }
 }

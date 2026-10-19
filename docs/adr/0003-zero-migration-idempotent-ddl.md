@@ -22,6 +22,8 @@ Drizzle 迁移；Python commerce 仍由 Alembic 管理，二者不共用迁移�
 - 演示站的运行时库是 SQLite，落在 Vercel 函数的 `/tmp/evoloop.db` —— **每个实例冷启动都是空库**。
   `DbCatalogAdapter` 的设计正是「表空则从导入层灌种一次」。没有需要跨版本保留的数据，
   迁移脚本无从谈起。
+  （2026-10-19 R3 起读取不再灌种：任何空库部署都必须先运行 `npm run catalog:initialize`，
+  否则运行时目录为空；该冷启动前提已不成立。）
 - 需要建的表只有三张（`products` / `product_embeddings` / `ai_usage`），且 DDL 只有
   `CREATE TABLE IF NOT EXISTS` 这一种形态，没有 `ALTER`。
 - 引入迁移会带来一条**必须在部署前手工执行**的步骤，这是演示站最不该有的运维面。

@@ -1,29 +1,10 @@
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
-import Module from 'node:module'
-import ts from 'typescript'
+import { createTsRequire } from './lib/ts-require.mjs'
 
 const root = process.cwd()
-const originalResolve = Module._resolveFilename
-Module._resolveFilename = function (request, ...args) {
-  return originalResolve.call(
-    this,
-    request.startsWith('@/') ? path.join(root, 'src', request.slice(2)) : request,
-    ...args,
-  )
-}
-Module._extensions['.ts'] = (module, filename) => {
-  const source = fs.readFileSync(filename, 'utf8')
-  module._compile(
-    ts.transpileModule(source, {
-      compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true },
-    }).outputText,
-    filename,
-  )
-}
-
-const require = Module.createRequire(import.meta.url)
+const require = createTsRequire(root, import.meta.url)
 const { seedProducts } = require('../src/server/catalog/seed.ts')
 const commerceProducts = JSON.parse(
   fs.readFileSync(path.join(root, 'backend/data/catalog.json'), 'utf8'),
